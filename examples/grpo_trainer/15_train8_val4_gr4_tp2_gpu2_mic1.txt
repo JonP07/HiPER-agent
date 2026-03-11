@@ -1,0 +1,319 @@
++ ENGINE=vllm
++ export VLLM_ATTENTION_BACKEND=XFORMERS
++ VLLM_ATTENTION_BACKEND=XFORMERS
++ export HYDRA_FULL_ERROR=1
++ HYDRA_FULL_ERROR=1
++ export NCCL_P2P_DISABLE=1
++ NCCL_P2P_DISABLE=1
++ export NCCL_IB_DISABLE=1
++ NCCL_IB_DISABLE=1
++ num_cpus_per_env_worker=0.1
++ train_data_size=8
++ val_data_size=4
++ group_size=4
++ python3 -m examples.data_preprocess.prepare --mode text --train_data_size 8 --val_data_size 4
+num_proc must be <= 4. Reducing num_proc to 4 for dataset of size 4.
+WARNING:2025-12-02 19:42:14,930:num_proc must be <= 4. Reducing num_proc to 4 for dataset of size 4.
+processing data for mode: text
+Creating parquet from Arrow format:   0%|          | 0/1 [00:00<?, ?ba/s]Creating parquet from Arrow format: 100%|██████████| 1/1 [00:00<00:00, 65.84ba/s]
+Creating parquet from Arrow format:   0%|          | 0/1 [00:00<?, ?ba/s]Creating parquet from Arrow format: 100%|██████████| 1/1 [00:00<00:00, 2839.75ba/s]
+Exception ignored in: <function ResourceTracker.__del__ at 0x7f6dd6674900>
+Traceback (most recent call last):
+  File "/users/3/peng0504/.conda/envs/verl-agent/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 80, in __del__
+  File "/users/3/peng0504/.conda/envs/verl-agent/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 89, in _stop
+  File "/users/3/peng0504/.conda/envs/verl-agent/lib/python3.12/site-packages/multiprocess/resource_tracker.py", line 102, in _stop_locked
+AttributeError: '_thread.RLock' object has no attribute '_recursion_count'
++ python3 -m verl.trainer.main_ppo algorithm.adv_estimator=grpo data.train_files=/users/3/peng0504/data/verl-agent/text/train.parquet data.val_files=/users/3/peng0504/data/verl-agent/text/test.parquet data.train_batch_size=8 data.val_batch_size=4 data.max_prompt_length=2048 data.max_response_length=512 data.filter_overlong_prompts=True data.truncation=error data.return_raw_chat=True actor_rollout_ref.model.path=Qwen/Qwen2.5-1.5B-Instruct actor_rollout_ref.actor.optim.lr=1e-6 actor_rollout_ref.model.use_remove_padding=True actor_rollout_ref.actor.ppo_mini_batch_size=8 actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 actor_rollout_ref.actor.use_kl_loss=True actor_rollout_ref.actor.kl_loss_coef=0.01 actor_rollout_ref.actor.kl_loss_type=low_var_kl actor_rollout_ref.model.enable_gradient_checkpointing=True actor_rollout_ref.actor.fsdp_config.param_offload=False actor_rollout_ref.actor.fsdp_config.optimizer_offload=False actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=8 actor_rollout_ref.rollout.tensor_model_parallel_size=2 actor_rollout_ref.rollout.name=vllm actor_rollout_ref.rollout.gpu_memory_utilization=0.25 actor_rollout_ref.rollout.enable_chunked_prefill=False actor_rollout_ref.rollout.enforce_eager=False actor_rollout_ref.rollout.free_cache_engine=False actor_rollout_ref.rollout.val_kwargs.temperature=0.4 actor_rollout_ref.rollout.val_kwargs.do_sample=True actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=8 actor_rollout_ref.ref.fsdp_config.param_offload=True actor_rollout_ref.actor.use_invalid_action_penalty=True actor_rollout_ref.actor.invalid_action_penalty_coef=0.1 algorithm.use_kl_in_reward=False env.env_name=alfworld/AlfredTWEnv env.seed=0 env.max_steps=50 env.rollout.n=4 env.resources_per_worker.num_cpus=0.1 trainer.critic_warmup=0 'trainer.logger=[console,wandb]' trainer.project_name=verl_agent_alfworld trainer.experiment_name=grpo_qwen2.5_1.5b trainer.n_gpus_per_node=2 trainer.nnodes=1 trainer.save_freq=-1 trainer.test_freq=5 trainer.total_epochs=150 trainer.val_before_train=True
+2025-12-02 19:42:40,306	INFO worker.py:1942 -- Started a local Ray instance. View the dashboard at [1m[32mhttp://127.0.0.1:8265 [39m[22m
+[36m(TaskRunner pid=2694352)[0m   0%|          | 0/8810 [00:00<?, ?it/s]
+[36m(TaskRunner pid=2694352)[0m   0%|          | 29/8810 [00:00<00:31, 280.77it/s]
+[36m(TaskRunner pid=2694352)[0m   1%|          | 65/8810 [00:00<00:26, 324.18it/s]
+[36m(TaskRunner pid=2694352)[0m   1%|          | 106/8810 [00:00<00:24, 354.53it/s]
+[36m(TaskRunner pid=2694352)[0m   2%|▏         | 142/8810 [00:00<00:31, 279.21it/s]
+[36m(TaskRunner pid=2694352)[0m   2%|▏         | 172/8810 [00:00<00:32, 267.39it/s]
+[36m(TaskRunner pid=2694352)[0m   2%|▏         | 209/8810 [00:00<00:29, 294.82it/s]
+[36m(TaskRunner pid=2694352)[0m   3%|▎         | 240/8810 [00:00<00:31, 272.82it/s]
+[36m(TaskRunner pid=2694352)[0m   3%|▎         | 269/8810 [00:00<00:33, 252.82it/s]
+[36m(TaskRunner pid=2694352)[0m   3%|▎         | 307/8810 [00:01<00:30, 282.26it/s]
+[36m(TaskRunner pid=2694352)[0m   4%|▍         | 349/8810 [00:01<00:26, 318.86it/s]
+[36m(TaskRunner pid=2694352)[0m   4%|▍         | 392/8810 [00:01<00:24, 348.54it/s]
+[36m(TaskRunner pid=2694352)[0m   5%|▍         | 437/8810 [00:01<00:22, 374.14it/s]
+[36m(TaskRunner pid=2694352)[0m   5%|▌         | 476/8810 [00:01<00:24, 346.11it/s]
+[36m(TaskRunner pid=2694352)[0m   6%|▌         | 513/8810 [00:01<00:23, 351.41it/s]
+[36m(TaskRunner pid=2694352)[0m   6%|▋         | 552/8810 [00:01<00:23, 357.76it/s]
+[36m(TaskRunner pid=2694352)[0m   7%|▋         | 589/8810 [00:01<00:23, 349.83it/s]
+[36m(TaskRunner pid=2694352)[0m   7%|▋         | 625/8810 [00:01<00:26, 313.54it/s]
+[36m(TaskRunner pid=2694352)[0m   7%|▋         | 658/8810 [00:02<00:30, 263.98it/s]
+[36m(TaskRunner pid=2694352)[0m   8%|▊         | 687/8810 [00:02<00:31, 260.52it/s]
+[36m(TaskRunner pid=2694352)[0m   8%|▊         | 726/8810 [00:02<00:27, 292.28it/s]
+[36m(TaskRunner pid=2694352)[0m   9%|▊         | 762/8810 [00:02<00:26, 308.81it/s]
+[36m(TaskRunner pid=2694352)[0m   9%|▉         | 795/8810 [00:02<00:27, 290.88it/s]
+[36m(TaskRunner pid=2694352)[0m   9%|▉         | 826/8810 [00:02<00:27, 292.93it/s]
+[36m(TaskRunner pid=2694352)[0m  10%|▉         | 857/8810 [00:02<00:27, 287.01it/s]
+[36m(TaskRunner pid=2694352)[0m  10%|█         | 887/8810 [00:02<00:28, 280.24it/s]
+[36m(TaskRunner pid=2694352)[0m  10%|█         | 916/8810 [00:03<00:28, 274.37it/s]
+[36m(TaskRunner pid=2694352)[0m  11%|█         | 956/8810 [00:03<00:25, 302.33it/s]
+[36m(TaskRunner pid=2694352)[0m  11%|█         | 987/8810 [00:03<00:48, 162.38it/s]
+[36m(TaskRunner pid=2694352)[0m  12%|█▏        | 1026/8810 [00:03<00:38, 201.81it/s]
+[36m(TaskRunner pid=2694352)[0m  12%|█▏        | 1055/8810 [00:03<00:38, 203.79it/s]
+[36m(TaskRunner pid=2694352)[0m  12%|█▏        | 1081/8810 [00:03<00:38, 201.19it/s]
+[36m(TaskRunner pid=2694352)[0m  13%|█▎        | 1105/8810 [00:04<00:40, 188.88it/s]
+[36m(TaskRunner pid=2694352)[0m  13%|█▎        | 1129/8810 [00:04<00:39, 196.35it/s]
+[36m(TaskRunner pid=2694352)[0m  13%|█▎        | 1151/8810 [00:04<00:38, 196.80it/s]
+[36m(TaskRunner pid=2694352)[0m  13%|█▎        | 1173/8810 [00:04<00:39, 192.08it/s]
+[36m(TaskRunner pid=2694352)[0m  14%|█▎        | 1194/8810 [00:04<00:38, 195.89it/s]
+[36m(TaskRunner pid=2694352)[0m  14%|█▍        | 1215/8810 [00:04<00:39, 190.32it/s]
+[36m(TaskRunner pid=2694352)[0m  14%|█▍        | 1235/8810 [00:04<00:40, 187.62it/s]
+[36m(TaskRunner pid=2694352)[0m  14%|█▍        | 1261/8810 [00:04<00:36, 204.23it/s]
+[36m(TaskRunner pid=2694352)[0m  15%|█▍        | 1284/8810 [00:04<00:36, 208.80it/s]
+[36m(TaskRunner pid=2694352)[0m  15%|█▍        | 1306/8810 [00:05<00:35, 210.03it/s]
+[36m(TaskRunner pid=2694352)[0m  15%|█▌        | 1328/8810 [00:05<00:35, 212.51it/s]
+[36m(TaskRunner pid=2694352)[0m  15%|█▌        | 1350/8810 [00:05<00:36, 202.53it/s]
+[36m(TaskRunner pid=2694352)[0m  16%|█▌        | 1377/8810 [00:05<00:34, 217.27it/s]
+[36m(TaskRunner pid=2694352)[0m  16%|█▌        | 1399/8810 [00:05<00:35, 210.65it/s]
+[36m(TaskRunner pid=2694352)[0m  16%|█▌        | 1421/8810 [00:05<00:35, 209.67it/s]
+[36m(TaskRunner pid=2694352)[0m  16%|█▋        | 1443/8810 [00:05<00:37, 196.97it/s]
+[36m(TaskRunner pid=2694352)[0m  17%|█▋        | 1463/8810 [00:05<00:39, 185.39it/s]
+[36m(TaskRunner pid=2694352)[0m  17%|█▋        | 1487/8810 [00:05<00:36, 199.13it/s]
+[36m(TaskRunner pid=2694352)[0m  17%|█▋        | 1508/8810 [00:06<00:42, 172.85it/s]
+[36m(TaskRunner pid=2694352)[0m  17%|█▋        | 1531/8810 [00:06<00:38, 186.89it/s]
+[36m(TaskRunner pid=2694352)[0m  18%|█▊        | 1551/8810 [00:06<00:39, 185.97it/s]
+[36m(TaskRunner pid=2694352)[0m  18%|█▊        | 1571/8810 [00:06<00:39, 184.62it/s]
+[36m(TaskRunner pid=2694352)[0m  18%|█▊        | 1590/8810 [00:06<00:42, 169.58it/s]
+[36m(TaskRunner pid=2694352)[0m  18%|█▊        | 1608/8810 [00:06<00:44, 163.37it/s]
+[36m(TaskRunner pid=2694352)[0m  18%|█▊        | 1625/8810 [00:06<00:46, 153.04it/s]
+[36m(TaskRunner pid=2694352)[0m  19%|█▊        | 1647/8810 [00:06<00:42, 168.20it/s]
+[36m(TaskRunner pid=2694352)[0m  19%|█▉        | 1665/8810 [00:07<00:43, 164.67it/s]
+[36m(TaskRunner pid=2694352)[0m  19%|█▉        | 1685/8810 [00:07<00:41, 173.00it/s]
+[36m(TaskRunner pid=2694352)[0m  19%|█▉        | 1703/8810 [00:07<00:44, 159.01it/s]
+[36m(TaskRunner pid=2694352)[0m  20%|█▉        | 1720/8810 [00:07<00:45, 156.80it/s]
+[36m(TaskRunner pid=2694352)[0m  20%|█▉        | 1738/8810 [00:07<00:43, 161.58it/s]
+[36m(TaskRunner pid=2694352)[0m  20%|█▉        | 1757/8810 [00:07<00:41, 168.99it/s]
+[36m(TaskRunner pid=2694352)[0m  20%|██        | 1775/8810 [00:07<00:41, 169.78it/s]
+[36m(TaskRunner pid=2694352)[0m  20%|██        | 1793/8810 [00:07<00:46, 150.35it/s]
+[36m(TaskRunner pid=2694352)[0m  21%|██        | 1810/8810 [00:07<00:46, 151.84it/s]
+[36m(TaskRunner pid=2694352)[0m  21%|██        | 1827/8810 [00:08<00:44, 155.19it/s]
+[36m(TaskRunner pid=2694352)[0m  21%|██        | 1850/8810 [00:08<00:39, 175.30it/s]
+[36m(TaskRunner pid=2694352)[0m  21%|██        | 1872/8810 [00:08<00:37, 185.16it/s]
+[36m(TaskRunner pid=2694352)[0m  21%|██▏       | 1891/8810 [00:08<00:38, 180.07it/s]
+[36m(TaskRunner pid=2694352)[0m  22%|██▏       | 1916/8810 [00:08<00:34, 197.01it/s]
+[36m(TaskRunner pid=2694352)[0m  22%|██▏       | 1936/8810 [00:08<00:36, 188.44it/s]
+[36m(TaskRunner pid=2694352)[0m  22%|██▏       | 1964/8810 [00:08<00:32, 210.80it/s]
+[36m(TaskRunner pid=2694352)[0m  23%|██▎       | 1986/8810 [00:08<00:35, 192.45it/s]
+[36m(TaskRunner pid=2694352)[0m  23%|██▎       | 2010/8810 [00:08<00:33, 201.55it/s]
+[36m(TaskRunner pid=2694352)[0m  23%|██▎       | 2031/8810 [00:09<00:34, 193.73it/s]
+[36m(TaskRunner pid=2694352)[0m  23%|██▎       | 2051/8810 [00:09<00:36, 185.20it/s]
+[36m(TaskRunner pid=2694352)[0m  23%|██▎       | 2070/8810 [00:09<00:37, 182.11it/s]
+[36m(TaskRunner pid=2694352)[0m  24%|██▎       | 2090/8810 [00:09<00:36, 183.38it/s]
+[36m(TaskRunner pid=2694352)[0m  24%|██▍       | 2109/8810 [00:09<00:36, 181.19it/s]
+[36m(TaskRunner pid=2694352)[0m  24%|██▍       | 2142/8810 [00:09<00:30, 220.93it/s]
+[36m(TaskRunner pid=2694352)[0m  25%|██▍       | 2169/8810 [00:09<00:29, 223.04it/s]
+[36m(TaskRunner pid=2694352)[0m  25%|██▍       | 2198/8810 [00:09<00:27, 239.52it/s]
+[36m(TaskRunner pid=2694352)[0m  25%|██▌       | 2229/8810 [00:09<00:25, 257.33it/s]
+[36m(TaskRunner pid=2694352)[0m  26%|██▌       | 2278/8810 [00:10<00:20, 322.75it/s]
+[36m(TaskRunner pid=2694352)[0m  26%|██▌       | 2311/8810 [00:10<00:20, 314.63it/s]
+[36m(TaskRunner pid=2694352)[0m  42%|████▏     | 3686/8810 [00:10<00:01, 4146.01it/s]
+[36m(TaskRunner pid=2694352)[0m  47%|████▋     | 4119/8810 [00:11<00:06, 771.66it/s] 
+[36m(TaskRunner pid=2694352)[0m  50%|█████     | 4430/8810 [00:13<00:09, 477.02it/s]
+[36m(TaskRunner pid=2694352)[0m  53%|█████▎    | 4654/8810 [00:14<00:10, 396.28it/s]
+[36m(TaskRunner pid=2694352)[0m  55%|█████▍    | 4818/8810 [00:15<00:13, 300.98it/s]
+[36m(TaskRunner pid=2694352)[0m  56%|█████▌    | 4937/8810 [00:16<00:13, 279.38it/s]
+[36m(TaskRunner pid=2694352)[0m  57%|█████▋    | 5027/8810 [00:16<00:12, 296.63it/s]
+[36m(TaskRunner pid=2694352)[0m  58%|█████▊    | 5104/8810 [00:16<00:14, 248.95it/s]
+[36m(TaskRunner pid=2694352)[0m  59%|█████▊    | 5162/8810 [00:17<00:15, 239.57it/s]
+[36m(TaskRunner pid=2694352)[0m  59%|█████▉    | 5228/8810 [00:17<00:13, 268.60it/s]
+[36m(TaskRunner pid=2694352)[0m  60%|█████▉    | 5279/8810 [00:17<00:15, 232.04it/s]
+[36m(TaskRunner pid=2694352)[0m  60%|██████    | 5319/8810 [00:17<00:15, 224.66it/s]
+[36m(TaskRunner pid=2694352)[0m  61%|██████    | 5353/8810 [00:18<00:15, 217.43it/s]
+[36m(TaskRunner pid=2694352)[0m  61%|██████    | 5382/8810 [00:18<00:15, 218.30it/s]
+[36m(TaskRunner pid=2694352)[0m  61%|██████▏   | 5409/8810 [00:18<00:15, 212.68it/s]
+[36m(TaskRunner pid=2694352)[0m  63%|██████▎   | 5524/8810 [00:18<00:08, 367.13it/s]
+[36m(TaskRunner pid=2694352)[0m  63%|██████▎   | 5575/8810 [00:18<00:10, 298.78it/s]
+[36m(TaskRunner pid=2694352)[0m  64%|██████▍   | 5617/8810 [00:18<00:12, 261.01it/s]
+[36m(TaskRunner pid=2694352)[0m  64%|██████▍   | 5652/8810 [00:19<00:12, 249.14it/s]
+[36m(TaskRunner pid=2694352)[0m  65%|██████▍   | 5683/8810 [00:19<00:13, 234.19it/s]
+[36m(TaskRunner pid=2694352)[0m  65%|██████▍   | 5710/8810 [00:19<00:17, 175.18it/s]
+[36m(TaskRunner pid=2694352)[0m  65%|██████▌   | 5732/8810 [00:19<00:18, 169.98it/s]
+[36m(TaskRunner pid=2694352)[0m  65%|██████▌   | 5756/8810 [00:19<00:16, 180.13it/s]
+[36m(TaskRunner pid=2694352)[0m  66%|██████▌   | 5777/8810 [00:19<00:16, 185.35it/s]
+[36m(TaskRunner pid=2694352)[0m  66%|██████▌   | 5798/8810 [00:20<00:16, 187.12it/s]
+[36m(TaskRunner pid=2694352)[0m  66%|██████▌   | 5819/8810 [00:20<00:16, 177.13it/s]
+[36m(TaskRunner pid=2694352)[0m  66%|██████▋   | 5838/8810 [00:20<00:17, 167.71it/s]
+[36m(TaskRunner pid=2694352)[0m  66%|██████▋   | 5856/8810 [00:20<00:17, 164.43it/s]
+[36m(TaskRunner pid=2694352)[0m  67%|██████▋   | 5873/8810 [00:20<00:18, 159.68it/s]
+[36m(TaskRunner pid=2694352)[0m  67%|██████▋   | 5890/8810 [00:20<00:20, 144.50it/s]
+[36m(TaskRunner pid=2694352)[0m  68%|██████▊   | 5967/8810 [00:20<00:09, 293.01it/s]
+[36m(TaskRunner pid=2694352)[0m  68%|██████▊   | 6000/8810 [00:21<00:12, 230.89it/s]
+[36m(TaskRunner pid=2694352)[0m  68%|██████▊   | 6027/8810 [00:21<00:12, 229.47it/s]
+[36m(TaskRunner pid=2694352)[0m  69%|██████▉   | 6093/8810 [00:21<00:08, 328.23it/s]
+[36m(TaskRunner pid=2694352)[0m  70%|██████▉   | 6131/8810 [00:21<00:11, 243.33it/s]
+[36m(TaskRunner pid=2694352)[0m  70%|██████▉   | 6162/8810 [00:21<00:12, 219.69it/s]
+[36m(TaskRunner pid=2694352)[0m  70%|███████   | 6189/8810 [00:21<00:12, 210.37it/s]
+[36m(TaskRunner pid=2694352)[0m  72%|███████▏  | 6332/8810 [00:21<00:05, 451.14it/s]
+[36m(TaskRunner pid=2694352)[0m  73%|███████▎  | 6466/8810 [00:22<00:03, 648.39it/s]
+[36m(TaskRunner pid=2694352)[0m  74%|███████▍  | 6545/8810 [00:22<00:07, 314.37it/s]
+[36m(TaskRunner pid=2694352)[0m  75%|███████▍  | 6605/8810 [00:23<00:08, 261.55it/s]
+[36m(TaskRunner pid=2694352)[0m  76%|███████▌  | 6652/8810 [00:23<00:09, 237.09it/s]
+[36m(TaskRunner pid=2694352)[0m  76%|███████▌  | 6690/8810 [00:23<00:11, 181.22it/s]
+[36m(TaskRunner pid=2694352)[0m  76%|███████▋  | 6720/8810 [00:23<00:11, 178.72it/s]
+[36m(TaskRunner pid=2694352)[0m  77%|███████▋  | 6746/8810 [00:24<00:11, 177.67it/s]
+[36m(TaskRunner pid=2694352)[0m  77%|███████▋  | 6770/8810 [00:24<00:11, 180.65it/s]
+[36m(TaskRunner pid=2694352)[0m  77%|███████▋  | 6792/8810 [00:24<00:11, 175.52it/s]
+[36m(TaskRunner pid=2694352)[0m  77%|███████▋  | 6813/8810 [00:24<00:11, 181.33it/s]
+[36m(TaskRunner pid=2694352)[0m  78%|███████▊  | 6834/8810 [00:24<00:11, 177.59it/s]
+[36m(TaskRunner pid=2694352)[0m  78%|███████▊  | 6854/8810 [00:24<00:11, 172.71it/s]
+[36m(TaskRunner pid=2694352)[0m  78%|███████▊  | 6873/8810 [00:24<00:11, 175.09it/s]
+[36m(TaskRunner pid=2694352)[0m  78%|███████▊  | 6898/8810 [00:24<00:09, 191.55it/s]
+[36m(TaskRunner pid=2694352)[0m  79%|███████▊  | 6920/8810 [00:24<00:09, 197.59it/s]
+[36m(TaskRunner pid=2694352)[0m  79%|███████▉  | 6944/8810 [00:25<00:09, 206.56it/s]
+[36m(TaskRunner pid=2694352)[0m  79%|███████▉  | 6966/8810 [00:25<00:08, 208.89it/s]
+[36m(TaskRunner pid=2694352)[0m  79%|███████▉  | 6988/8810 [00:25<00:08, 208.13it/s]
+[36m(TaskRunner pid=2694352)[0m  81%|████████  | 7144/8810 [00:25<00:02, 588.65it/s]
+[36m(TaskRunner pid=2694352)[0m  82%|████████▏ | 7206/8810 [00:25<00:04, 364.46it/s]
+[36m(TaskRunner pid=2694352)[0m  82%|████████▏ | 7255/8810 [00:25<00:04, 374.71it/s]
+[36m(TaskRunner pid=2694352)[0m  84%|████████▎ | 7359/8810 [00:25<00:02, 517.97it/s]
+[36m(TaskRunner pid=2694352)[0m  84%|████████▍ | 7423/8810 [00:26<00:03, 403.92it/s]
+[36m(TaskRunner pid=2694352)[0m  85%|████████▍ | 7476/8810 [00:26<00:03, 384.95it/s]
+[36m(TaskRunner pid=2694352)[0m  85%|████████▌ | 7523/8810 [00:26<00:03, 355.28it/s]
+[36m(TaskRunner pid=2694352)[0m  86%|████████▌ | 7565/8810 [00:26<00:03, 332.31it/s]
+[36m(TaskRunner pid=2694352)[0m  86%|████████▋ | 7603/8810 [00:26<00:03, 313.92it/s]
+[36m(TaskRunner pid=2694352)[0m  87%|████████▋ | 7637/8810 [00:26<00:03, 300.02it/s]
+[36m(TaskRunner pid=2694352)[0m  87%|████████▋ | 7671/8810 [00:27<00:03, 307.96it/s]
+[36m(TaskRunner pid=2694352)[0m  87%|████████▋ | 7705/8810 [00:27<00:03, 314.65it/s]
+[36m(TaskRunner pid=2694352)[0m  88%|████████▊ | 7738/8810 [00:27<00:03, 305.42it/s]
+[36m(TaskRunner pid=2694352)[0m  88%|████████▊ | 7770/8810 [00:27<00:03, 287.04it/s]
+[36m(TaskRunner pid=2694352)[0m  89%|████████▊ | 7800/8810 [00:27<00:03, 273.89it/s]
+[36m(TaskRunner pid=2694352)[0m  89%|████████▉ | 7828/8810 [00:27<00:05, 189.88it/s]
+[36m(TaskRunner pid=2694352)[0m  89%|████████▉ | 7856/8810 [00:27<00:04, 206.98it/s]
+[36m(TaskRunner pid=2694352)[0m  90%|████████▉ | 7890/8810 [00:27<00:03, 235.04it/s]
+[36m(TaskRunner pid=2694352)[0m  90%|████████▉ | 7917/8810 [00:28<00:03, 236.58it/s]
+[36m(TaskRunner pid=2694352)[0m  90%|█████████ | 7943/8810 [00:28<00:03, 233.00it/s]
+[36m(TaskRunner pid=2694352)[0m  90%|█████████ | 7968/8810 [00:28<00:03, 222.91it/s]
+[36m(TaskRunner pid=2694352)[0m  91%|█████████ | 7992/8810 [00:28<00:03, 221.39it/s]
+[36m(TaskRunner pid=2694352)[0m  91%|█████████ | 8015/8810 [00:28<00:03, 199.43it/s]
+[36m(TaskRunner pid=2694352)[0m  91%|█████████ | 8038/8810 [00:28<00:03, 199.68it/s]
+[36m(TaskRunner pid=2694352)[0m  91%|█████████▏| 8059/8810 [00:28<00:03, 189.20it/s]
+[36m(TaskRunner pid=2694352)[0m  92%|█████████▏| 8079/8810 [00:28<00:03, 187.10it/s]
+[36m(TaskRunner pid=2694352)[0m  92%|█████████▏| 8098/8810 [00:29<00:04, 177.95it/s]
+[36m(TaskRunner pid=2694352)[0m  92%|█████████▏| 8116/8810 [00:29<00:04, 165.38it/s]
+[36m(TaskRunner pid=2694352)[0m  92%|█████████▏| 8133/8810 [00:29<00:04, 151.18it/s]
+[36m(TaskRunner pid=2694352)[0m  93%|█████████▎| 8150/8810 [00:29<00:04, 153.29it/s]
+[36m(TaskRunner pid=2694352)[0m  93%|█████████▎| 8169/8810 [00:29<00:03, 162.29it/s]
+[36m(TaskRunner pid=2694352)[0m  93%|█████████▎| 8187/8810 [00:29<00:03, 165.07it/s]
+[36m(TaskRunner pid=2694352)[0m  93%|█████████▎| 8206/8810 [00:29<00:03, 169.02it/s]
+[36m(TaskRunner pid=2694352)[0m  93%|█████████▎| 8225/8810 [00:29<00:03, 170.83it/s]
+[36m(TaskRunner pid=2694352)[0m  94%|█████████▍| 8261/8810 [00:29<00:02, 222.22it/s]
+[36m(TaskRunner pid=2694352)[0m  94%|█████████▍| 8284/8810 [00:30<00:02, 206.51it/s]
+[36m(TaskRunner pid=2694352)[0m  94%|█████████▍| 8306/8810 [00:30<00:02, 201.91it/s]
+[36m(TaskRunner pid=2694352)[0m  95%|█████████▍| 8327/8810 [00:30<00:02, 189.51it/s]
+[36m(TaskRunner pid=2694352)[0m  95%|█████████▍| 8347/8810 [00:30<00:02, 192.12it/s]
+[36m(TaskRunner pid=2694352)[0m  95%|█████████▌| 8387/8810 [00:30<00:01, 245.37it/s]
+[36m(TaskRunner pid=2694352)[0m  96%|█████████▌| 8414/8810 [00:30<00:01, 249.60it/s]
+[36m(TaskRunner pid=2694352)[0m  96%|█████████▌| 8440/8810 [00:30<00:01, 241.98it/s]
+[36m(TaskRunner pid=2694352)[0m  96%|█████████▌| 8466/8810 [00:30<00:01, 245.37it/s]
+[36m(TaskRunner pid=2694352)[0m  96%|█████████▋| 8495/8810 [00:30<00:01, 253.33it/s]
+[36m(TaskRunner pid=2694352)[0m  97%|█████████▋| 8521/8810 [00:31<00:01, 247.46it/s]
+[36m(TaskRunner pid=2694352)[0m  97%|█████████▋| 8546/8810 [00:31<00:01, 239.66it/s]
+[36m(TaskRunner pid=2694352)[0m  97%|█████████▋| 8571/8810 [00:31<00:01, 229.10it/s]
+[36m(TaskRunner pid=2694352)[0m  98%|█████████▊| 8595/8810 [00:31<00:00, 228.80it/s]
+[36m(TaskRunner pid=2694352)[0m  98%|█████████▊| 8619/8810 [00:31<00:00, 228.61it/s]
+[36m(TaskRunner pid=2694352)[0m  98%|█████████▊| 8642/8810 [00:31<00:00, 222.33it/s]
+[36m(TaskRunner pid=2694352)[0m  98%|█████████▊| 8665/8810 [00:31<00:00, 215.35it/s]
+[36m(TaskRunner pid=2694352)[0m  99%|█████████▊| 8691/8810 [00:31<00:00, 226.62it/s]
+[36m(TaskRunner pid=2694352)[0m  99%|█████████▉| 8722/8810 [00:31<00:00, 248.69it/s]
+[36m(TaskRunner pid=2694352)[0m  99%|█████████▉| 8749/8810 [00:32<00:00, 253.04it/s]
+[36m(TaskRunner pid=2694352)[0m 100%|█████████▉| 8783/8810 [00:32<00:00, 274.40it/s]100%|██████████| 8810/8810 [00:32<00:00, 273.25it/s]
+[36m(TaskRunner pid=2694352)[0m   0%|          | 0/494 [00:00<?, ?it/s]
+[36m(TaskRunner pid=2694352)[0m   4%|▍         | 21/494 [00:00<00:02, 205.93it/s]
+[36m(TaskRunner pid=2694352)[0m   9%|▉         | 44/494 [00:00<00:02, 209.90it/s]
+[36m(TaskRunner pid=2694352)[0m  13%|█▎        | 65/494 [00:00<00:02, 198.37it/s]
+[36m(TaskRunner pid=2694352)[0m  19%|█▊        | 92/494 [00:00<00:01, 223.82it/s]
+[36m(TaskRunner pid=2694352)[0m  23%|██▎       | 115/494 [00:00<00:01, 225.92it/s]
+[36m(TaskRunner pid=2694352)[0m  28%|██▊       | 138/494 [00:00<00:01, 217.90it/s]
+[36m(TaskRunner pid=2694352)[0m  46%|████▌     | 228/494 [00:00<00:00, 417.97it/s]
+[36m(TaskRunner pid=2694352)[0m  55%|█████▍    | 270/494 [00:00<00:00, 385.89it/s]
+[36m(TaskRunner pid=2694352)[0m  64%|██████▍   | 315/494 [00:00<00:00, 403.29it/s]
+[36m(TaskRunner pid=2694352)[0m  72%|███████▏  | 356/494 [00:01<00:00, 377.28it/s]
+[36m(TaskRunner pid=2694352)[0m  81%|████████  | 400/494 [00:01<00:00, 380.95it/s]
+[36m(TaskRunner pid=2694352)[0m  89%|████████▉ | 439/494 [00:01<00:00, 378.69it/s]
+[36m(TaskRunner pid=2694352)[0m  97%|█████████▋| 478/494 [00:01<00:00, 289.34it/s]
+[36m(TaskRunner pid=2694352)[0m 100%|██████████| 494/494 [00:01<00:00, 306.72it/s]
+[36m(TaskRunner pid=2694352)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 8 examples [00:00, 205.16 examples/s]
+[36m(TaskRunner pid=2694352)[0m Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=2694352)[0m WARNING:2025-12-02 19:44:00,214:Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=2694352)[0m Filtering prompts longer than 2048 tokens (num_proc=1):   0%|          | 0/8 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=2694352)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 8/8 [00:00<00:00, 15.59 examples/s]
+[36m(TaskRunner pid=2694352)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 8/8 [00:00<00:00, 12.82 examples/s]
+[36m(TaskRunner pid=2694352)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4 examples [00:00, 552.10 examples/s]
+[36m(TaskRunner pid=2694352)[0m Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=2694352)[0m WARNING:2025-12-02 19:44:01,066:Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=2694352)[0m Filtering prompts longer than 2048 tokens (num_proc=1):   0%|          | 0/4 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=2694352)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  8.61 examples/s]
+[36m(TaskRunner pid=2694352)[0m Filtering prompts longer than 2048 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  6.87 examples/s]
+[36m(TaskRunner pid=2694352)[0m DeprecationWarning: `ray.state.available_resources_per_node` is a private attribute and access will be removed in a future Ray version.
+[36m(TaskRunner pid=2694352)[0m WARNING:2025-12-02 19:44:03,050:Waiting for register center actor iy4JTU_register_center to be ready. Elapsed time: 0 seconds out of 300 seconds.
+[36m(WorkerDict pid=2703090)[0m You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+[36m(WorkerDict pid=2703090)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+[36m(WorkerDict pid=2703288)[0m You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:   0%|          | 0/35 [00:00<?, ?it/s]
+[36m(WorkerDict pid=2703288)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:   3%|▎         | 1/35 [00:00<00:26,  1.26it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:   6%|▌         | 2/35 [00:01<00:23,  1.42it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:   9%|▊         | 3/35 [00:02<00:26,  1.20it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  11%|█▏        | 4/35 [00:02<00:22,  1.40it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  14%|█▍        | 5/35 [00:03<00:19,  1.55it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  17%|█▋        | 6/35 [00:03<00:17,  1.69it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  20%|██        | 7/35 [00:04<00:15,  1.78it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  23%|██▎       | 8/35 [00:04<00:14,  1.85it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  26%|██▌       | 9/35 [00:05<00:13,  1.91it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  29%|██▊       | 10/35 [00:06<00:14,  1.75it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  31%|███▏      | 11/35 [00:06<00:15,  1.54it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  34%|███▍      | 12/35 [00:07<00:15,  1.52it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  37%|███▋      | 13/35 [00:08<00:14,  1.50it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  40%|████      | 14/35 [00:09<00:14,  1.47it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  43%|████▎     | 15/35 [00:09<00:14,  1.40it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  46%|████▌     | 16/35 [00:10<00:13,  1.37it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  49%|████▊     | 17/35 [00:11<00:13,  1.32it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  51%|█████▏    | 18/35 [00:12<00:12,  1.36it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  54%|█████▍    | 19/35 [00:12<00:10,  1.45it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  57%|█████▋    | 20/35 [00:13<00:09,  1.58it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  60%|██████    | 21/35 [00:13<00:08,  1.63it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  63%|██████▎   | 22/35 [00:14<00:07,  1.65it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  66%|██████▌   | 23/35 [00:14<00:07,  1.71it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  69%|██████▊   | 24/35 [00:15<00:05,  1.85it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  71%|███████▏  | 25/35 [00:15<00:05,  1.95it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  74%|███████▍  | 26/35 [00:16<00:04,  2.00it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  77%|███████▋  | 27/35 [00:16<00:03,  2.07it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  80%|████████  | 28/35 [00:17<00:03,  2.11it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  83%|████████▎ | 29/35 [00:17<00:02,  2.16it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  86%|████████▌ | 30/35 [00:17<00:02,  2.19it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  89%|████████▊ | 31/35 [00:18<00:01,  2.18it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  91%|█████████▏| 32/35 [00:18<00:01,  2.21it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  94%|█████████▍| 33/35 [00:19<00:00,  2.21it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes:  97%|█████████▋| 34/35 [00:19<00:00,  2.23it/s]
+[36m(WorkerDict pid=2703090)[0m Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:20<00:00,  2.02it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:20<00:00,  1.72it/s]
+[36m(WorkerDict pid=2703090)[0m /users/3/peng0504/.conda/envs/verl-agent/lib/python3.12/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:690: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=2703090)[0m   warnings.warn(
+[36m(TaskRunner pid=2694352)[0m wandb: Currently logged in as: peng0504 (mhong-university-of-minnesota) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+[36m(TaskRunner pid=2694352)[0m wandb: setting up run jyspjdqc
+[36m(TaskRunner pid=2694352)[0m wandb: Tracking run with wandb version 0.23.0
+[36m(TaskRunner pid=2694352)[0m wandb: Run data is saved locally in /projects/standard/mhong/peng0504/wandb/run-20251202_194530-jyspjdqc
+[36m(TaskRunner pid=2694352)[0m wandb: Run `wandb offline` to turn off syncing.
+[36m(TaskRunner pid=2694352)[0m wandb: Syncing run grpo_qwen2.5_1.5b
+[36m(TaskRunner pid=2694352)[0m wandb: ⭐️ View project at https://wandb.ai/mhong-university-of-minnesota/verl_agent_alfworld
+[36m(TaskRunner pid=2694352)[0m wandb: 🚀 View run at https://wandb.ai/mhong-university-of-minnesota/verl_agent_alfworld/runs/jyspjdqc
+[36m(WorkerDict pid=2703288)[0m /users/3/peng0504/.conda/envs/verl-agent/lib/python3.12/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:690: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=2703288)[0m   warnings.warn(
+[36m(TaskRunner pid=2694352)[0m wandb: Detected [openai] in use.
+[36m(TaskRunner pid=2694352)[0m wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[36m(TaskRunner pid=2694352)[0m wandb: For more information, check out the docs at: https://weave-docs.wandb.ai/
+[36m(TaskRunner pid=2694352)[0m Training Progress:   0%|          | 0/150 [00:00<?, ?it/s]
+[36m(TaskRunner pid=2694352)[0m Training Progress:   1%|          | 1/150 [14:05<35:00:49, 845.97s/it]
+*** SIGTERM received at time=1764727443 on cpu 48 ***
+PC: @     0x7f7a8c8ba628  (unknown)  pthread_cond_timedwait@@GLIBC_2.3.2
+    @     0x7f7a8c8be990  (unknown)  (unknown)
+    @        0x100000000  (unknown)  (unknown)
+[2025-12-02 20:04:03,361 E 2685971 2685971] logging.cc:474: *** SIGTERM received at time=1764727443 on cpu 48 ***
+[2025-12-02 20:04:03,365 E 2685971 2685971] logging.cc:474: PC: @     0x7f7a8c8ba628  (unknown)  pthread_cond_timedwait@@GLIBC_2.3.2
+[2025-12-02 20:04:03,371 E 2685971 2685971] logging.cc:474:     @     0x7f7a8c8be990  (unknown)  (unknown)
+[2025-12-02 20:04:03,428 E 2685971 2685971] logging.cc:474:     @        0x100000000  (unknown)  (unknown)

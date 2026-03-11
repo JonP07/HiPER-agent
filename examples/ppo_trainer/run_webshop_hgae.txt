@@ -1,0 +1,161 @@
++ ENGINE=vllm
++ export VLLM_ATTENTION_BACKEND=XFORMERS
++ VLLM_ATTENTION_BACKEND=XFORMERS
++ num_cpus_per_env_worker=0.1
++ train_data_size=4
++ val_data_size=4
++ python3 -m examples.data_preprocess.prepare --mode text --train_data_size 4 --val_data_size 4
+num_proc must be <= 4. Reducing num_proc to 4 for dataset of size 4.
+WARNING:2026-01-06 11:53:56,318:num_proc must be <= 4. Reducing num_proc to 4 for dataset of size 4.
+num_proc must be <= 4. Reducing num_proc to 4 for dataset of size 4.
+WARNING:2026-01-06 11:53:56,335:num_proc must be <= 4. Reducing num_proc to 4 for dataset of size 4.
+processing data for mode: text
+Creating parquet from Arrow format:   0%|          | 0/1 [00:00<?, ?ba/s]Creating parquet from Arrow format: 100%|██████████| 1/1 [00:00<00:00, 1548.86ba/s]
+Creating parquet from Arrow format:   0%|          | 0/1 [00:00<?, ?ba/s]Creating parquet from Arrow format: 100%|██████████| 1/1 [00:00<00:00, 1682.43ba/s]
++ python3 -m verl.trainer.main_ppo algorithm.adv_estimator=hgae data.train_files=/users/3/peng0504/data/verl-agent/text/train.parquet data.val_files=/users/3/peng0504/data/verl-agent/text/test.parquet data.train_batch_size=4 data.val_batch_size=4 data.max_prompt_length=4096 data.max_response_length=512 data.filter_overlong_prompts=True data.truncation=error data.return_raw_chat=True actor_rollout_ref.model.path=Qwen/Qwen2.5-1.5B-Instruct actor_rollout_ref.actor.optim.lr=1e-6 actor_rollout_ref.model.use_remove_padding=True actor_rollout_ref.actor.ppo_mini_batch_size=4 actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 actor_rollout_ref.actor.use_kl_loss=True actor_rollout_ref.actor.kl_loss_coef=0.01 actor_rollout_ref.actor.kl_loss_type=low_var_kl actor_rollout_ref.model.enable_gradient_checkpointing=True actor_rollout_ref.actor.fsdp_config.param_offload=False actor_rollout_ref.actor.fsdp_config.optimizer_offload=False actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=1 actor_rollout_ref.rollout.tensor_model_parallel_size=2 actor_rollout_ref.rollout.name=vllm actor_rollout_ref.rollout.gpu_memory_utilization=0.6 actor_rollout_ref.rollout.enable_chunked_prefill=False actor_rollout_ref.rollout.enforce_eager=False actor_rollout_ref.rollout.free_cache_engine=False actor_rollout_ref.rollout.val_kwargs.temperature=0.4 actor_rollout_ref.rollout.val_kwargs.do_sample=True actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=1 actor_rollout_ref.ref.fsdp_config.param_offload=True actor_rollout_ref.actor.use_invalid_action_penalty=True actor_rollout_ref.actor.invalid_action_penalty_coef=0.1 critic.optim.lr=1e-5 critic.model.use_remove_padding=True critic.model.path=Qwen/Qwen2.5-1.5B-Instruct critic.model.enable_gradient_checkpointing=True critic.ppo_micro_batch_size_per_gpu=1 critic.model.fsdp_config.param_offload=False critic.model.fsdp_config.optimizer_offload=False critic.use_two_heads_critic=False critic.use_three_heads_critic=True algorithm.use_kl_in_reward=False algorithm.hgae.norm_adv=True algorithm.hgae.keep_penalty=-3.0 algorithm.hgae.keep_penalty_mode=normalized algorithm.hgae.keep_penalty_skip_first=False algorithm.hgae.keep_penalty_normalized_style=last_step algorithm.hgae.switch_rate_floor=0.25 algorithm.hgae.switch_rate_floor_coef=0.0 algorithm.hgae.keep_consistency_penalty=-0.3 env.env_name=WebshopOptions env.seed=0 env.max_steps=15 env.resources_per_worker.num_cpus=0.1 trainer.critic_warmup=0 'trainer.logger=[console,wandb]' trainer.log_val_generations=10 trainer.project_name=verl_agent_webshop trainer.experiment_name=hgae_qwen2.5_1.5b_seed0 trainer.n_gpus_per_node=4 trainer.nnodes=1 trainer.save_freq=-1 trainer.test_freq=5 trainer.total_epochs=150 trainer.val_before_train=True
+2026-01-06 11:54:10,159	INFO worker.py:1942 -- Started a local Ray instance. View the dashboard at [1m[32m127.0.0.1:8265 [39m[22m
+[36m(TaskRunner pid=4158202)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1
+[36m(TaskRunner pid=4158202)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+[36m(TaskRunner pid=4158202)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+[36m(TaskRunner pid=4158202)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[36m(WebshopWorker pid=4158490)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+[36m(WebshopWorker pid=4158490)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+[36m(WebshopWorker pid=4158490)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+[36m(pid=4158491)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1[32m [repeated 4x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(pid=4158491)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.[32m [repeated 4x across cluster][0m
+[36m(pid=4158491)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.[32m [repeated 4x across cluster][0m
+[36m(pid=4158491)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.
+[36m(WebshopWorker pid=4158488)[0m   cli: click.BaseCommand,
+[36m(WebshopWorker pid=4158491)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158491)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158491)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type swigvarlink has no __module__ attribute[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/spacy/cli/_util.py:23: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.
+[36m(WebshopWorker pid=4158488)[0m   from click.parser import split_arg_string
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.
+[36m(WebshopWorker pid=4158488)[0m   from click.parser import split_arg_string
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+[36m(WebshopWorker pid=4158488)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/spacy/util.py:910: UserWarning: [W095] Model 'en_core_web_sm' (3.8.0) was trained with spaCy v3.8.0 and may not be 100% compatible with the current version (3.7.2). If you see errors or degraded performance, download a newer compatible model or retrain your custom model with the current spaCy version. For more details and available updates, run: python -m spacy validate
+[36m(WebshopWorker pid=4158488)[0m   warnings.warn(warn_msg)
+[36m(WebshopWorker pid=4158488)[0m   0%|          | 0/1000 [00:00<?, ?it/s]
+[36m(WebshopWorker pid=4158488)[0m 100%|██████████| 1000/1000 [00:00<00:00, 116924.17it/s]
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+[36m(WebshopWorker pid=4158488)[0m   warnings.warn(
+[36m(WebshopWorker pid=4158488)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/
+[36m(WebshopWorker pid=4158488)[0m You can set `disable_env_checker=True` to disable this check.[0m
+[36m(WebshopWorker pid=4158488)[0m   logger.warn(
+[36m(WebshopWorker pid=4158490)[0m 100%|██████████| 1000/1000 [00:00<00:00, 115858.35it/s]
+[36m(pid=4163180)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1
+[36m(pid=4163180)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+[36m(pid=4163180)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+[36m(pid=4163180)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[36m(WebshopWorker pid=4158490)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   cli: click.BaseCommand,[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4163180)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+[36m(WebshopWorker pid=4163180)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+[36m(WebshopWorker pid=4163180)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+[36m(WebshopWorker pid=4158490)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 6x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   from click.parser import split_arg_string[32m [repeated 6x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/spacy/util.py:910: UserWarning: [W095] Model 'en_core_web_sm' (3.8.0) was trained with spaCy v3.8.0 and may not be 100% compatible with the current version (3.7.2). If you see errors or degraded performance, download a newer compatible model or retrain your custom model with the current spaCy version. For more details and available updates, run: python -m spacy validate[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   warnings.warn(warn_msg)[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   0%|          | 0/1000 [00:00<?, ?it/s][32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   warnings.warn([32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4158490)[0m   logger.warn([32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4163181)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+[36m(WebshopWorker pid=4163181)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+[36m(WebshopWorker pid=4163181)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+[36m(pid=4163183)[0m Warning: Gym version v0.24.0 has a number of critical issues with `gym.make` such that the `reset` and `step` functions are called before returning the environment. It is recommend to downgrading to v0.23.1 or upgrading to v0.25.1[32m [repeated 3x across cluster][0m
+[36m(pid=4163183)[0m Additionally, Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.[32m [repeated 3x across cluster][0m
+[36m(pid=4163183)[0m Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.[32m [repeated 3x across cluster][0m
+[36m(pid=4163183)[0m See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m 100%|██████████| 1000/1000 [00:00<00:00, 110556.80it/s]
+[36m(WebshopWorker pid=4163183)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   cli: click.BaseCommand,[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/weasel/util/config.py:8: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated, it will only be available in 'shell_completion' in Click 9.0.[32m [repeated 8x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   from click.parser import split_arg_string[32m [repeated 8x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/thefuzz/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/spacy/util.py:910: UserWarning: [W095] Model 'en_core_web_sm' (3.8.0) was trained with spaCy v3.8.0 and may not be 100% compatible with the current version (3.7.2). If you see errors or degraded performance, download a newer compatible model or retrain your custom model with the current spaCy version. For more details and available updates, run: python -m spacy validate[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   warnings.warn(warn_msg)[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   0%|          | 0/1000 [00:00<?, ?it/s][32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/bs4/element.py:784: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   warnings.warn([32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/gym/envs/registration.py:619: UserWarning: [33mWARN: Env check failed with the following message: You must specify an observation space (cf gym.spaces) cf https://github.com/openai/gym/blob/master/gym/spaces/[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m You can set `disable_env_checker=True` to disable this check.[0m[32m [repeated 4x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m   logger.warn([32m [repeated 4x across cluster][0m
+[36m(TaskRunner pid=4158202)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute[32m [repeated 3x across cluster][0m
+[36m(TaskRunner pid=4158202)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute[32m [repeated 3x across cluster][0m
+[36m(WebshopWorker pid=4163183)[0m <frozen importlib._bootstrap>:241: DeprecationWarning: builtin type swigvarlink has no __module__ attribute[32m [repeated 2x across cluster][0m
+[36m(TaskRunner pid=4158202)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4 examples [00:00, 809.95 examples/s]
+[36m(TaskRunner pid=4158202)[0m Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=4158202)[0m WARNING:2026-01-06 11:54:48,479:Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=4158202)[0m Filtering prompts longer than 4096 tokens (num_proc=1):   0%|          | 0/4 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=4158202)[0m Filtering prompts longer than 4096 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  8.20 examples/s]
+[36m(TaskRunner pid=4158202)[0m Filtering prompts longer than 4096 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  6.81 examples/s]
+[36m(TaskRunner pid=4158202)[0m Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 4 examples [00:00, 810.77 examples/s]
+[36m(TaskRunner pid=4158202)[0m Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=4158202)[0m WARNING:2026-01-06 11:54:49,259:Setting TOKENIZERS_PARALLELISM=false for forked processes.
+[36m(TaskRunner pid=4158202)[0m Filtering prompts longer than 4096 tokens (num_proc=1):   0%|          | 0/4 [00:00<?, ? examples/s]
+[36m(TaskRunner pid=4158202)[0m Filtering prompts longer than 4096 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  8.49 examples/s]
+[36m(TaskRunner pid=4158202)[0m Filtering prompts longer than 4096 tokens (num_proc=1): 100%|██████████| 4/4 [00:00<00:00,  6.97 examples/s]
+[36m(TaskRunner pid=4158202)[0m DeprecationWarning: `ray.state.available_resources_per_node` is a private attribute and access will be removed in a future Ray version.
+[36m(TaskRunner pid=4158202)[0m WARNING:2026-01-06 11:54:51,057:Waiting for register center actor qT5Rbu_register_center to be ready. Elapsed time: 0 seconds out of 300 seconds.
+[36m(WorkerDict pid=4164083)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForTokenClassification is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+[36m(WorkerDict pid=4164083)[0m You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+[36m(WorkerDict pid=4164083)[0m Some weights of Qwen2ForTokenClassification were not initialized from the model checkpoint at Qwen/Qwen2.5-1.5B-Instruct and are newly initialized: ['score.bias', 'score.weight']
+[36m(WorkerDict pid=4164083)[0m You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[36m(WorkerDict pid=4164083)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`[32m [repeated 4x across cluster][0m
+[36m(WorkerDict pid=4164432)[0m You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=4164432)[0m Some weights of Qwen2ForTokenClassification were not initialized from the model checkpoint at Qwen/Qwen2.5-1.5B-Instruct and are newly initialized: ['score.bias', 'score.weight'][32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=4164432)[0m You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes:   0%|          | 0/35 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4164432)[0m Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes:   3%|▎         | 1/35 [00:00<00:22,  1.51it/s]
+[36m(WorkerDict pid=4164433)[0m Capturing CUDA graph shapes:   0%|          | 0/35 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4164433)[0m Capturing CUDA graph shapes:  26%|██▌       | 9/35 [00:05<00:17,  1.47it/s][32m [repeated 17x across cluster][0m
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes:  49%|████▊     | 17/35 [00:11<00:12,  1.40it/s][32m [repeated 16x across cluster][0m
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes:  74%|███████▍  | 26/35 [00:16<00:05,  1.79it/s][32m [repeated 17x across cluster][0m
+[36m(WorkerDict pid=4164433)[0m Capturing CUDA graph shapes:  91%|█████████▏| 32/35 [00:19<00:01,  1.78it/s]
+[36m(WorkerDict pid=4164433)[0m Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:20<00:00,  1.70it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:20<00:00,  1.67it/s]
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes:  89%|████████▊ | 31/35 [00:18<00:02,  1.81it/s][32m [repeated 11x across cluster][0m
+[36m(WorkerDict pid=4164433)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:690: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+[36m(WorkerDict pid=4164433)[0m   warnings.warn(
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes:  97%|█████████▋| 34/35 [00:20<00:00,  1.73it/s][32m [repeated 5x across cluster][0m
+[36m(WorkerDict pid=4164083)[0m Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:21<00:00,  1.66it/s]Capturing CUDA graph shapes: 100%|██████████| 35/35 [00:21<00:00,  1.63it/s]
+[36m(TaskRunner pid=4158202)[0m wandb: Currently logged in as: peng0504 (mhong-university-of-minnesota) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+[36m(TaskRunner pid=4158202)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/wandb/analytics/sentry.py:279: DeprecationWarning: The `Scope.user` setter is deprecated in favor of `Scope.set_user()`.
+[36m(TaskRunner pid=4158202)[0m   self.scope.user = {"email": email}
+[36m(TaskRunner pid=4158202)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/wandb/analytics/sentry.py:279: DeprecationWarning: The `Scope.user` setter is deprecated in favor of `Scope.set_user()`.
+[36m(TaskRunner pid=4158202)[0m   self.scope.user = {"email": email}
+[36m(TaskRunner pid=4158202)[0m wandb: Tracking run with wandb version 0.23.1
+[36m(TaskRunner pid=4158202)[0m wandb: Run data is saved locally in /projects/standard/mhong/peng0504/HGAE-Agent/verl-agent/wandb/run-20260106_115607-fviav2q9
+[36m(TaskRunner pid=4158202)[0m wandb: Run `wandb offline` to turn off syncing.
+[36m(TaskRunner pid=4158202)[0m wandb: Syncing run hgae_qwen2.5_1.5b_seed0
+[36m(TaskRunner pid=4158202)[0m wandb: ⭐️ View project at https://wandb.ai/mhong-university-of-minnesota/verl_agent_webshop
+[36m(TaskRunner pid=4158202)[0m wandb: 🚀 View run at https://wandb.ai/mhong-university-of-minnesota/verl_agent_webshop/runs/fviav2q9
+[36m(TaskRunner pid=4158202)[0m wandb: Detected [openai] in use.
+[36m(TaskRunner pid=4158202)[0m wandb: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[36m(TaskRunner pid=4158202)[0m wandb: For more information, check out the docs at: https://weave-docs.wandb.ai/
+[36m(TaskRunner pid=4158202)[0m Training Progress:   0%|          | 0/150 [00:00<?, ?it/s]
+[36m(WorkerDict pid=4164432)[0m /users/3/peng0504/.conda/envs/verl-agent-webshop/lib/python3.10/site-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:690: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .[32m [repeated 3x across cluster][0m
+[36m(WorkerDict pid=4164432)[0m   warnings.warn([32m [repeated 3x across cluster][0m
+[36m(TaskRunner pid=4158202)[0m Training Progress:   1%|          | 1/150 [02:06<5:13:38, 126.30s/it]
+[36m(TaskRunner pid=4158202)[0m Training Progress:   1%|▏         | 2/150 [04:14<5:14:38, 127.56s/it]
+[36m(TaskRunner pid=4158202)[0m Training Progress:   2%|▏         | 3/150 [06:02<4:49:54, 118.33s/it]
+[36m(TaskRunner pid=4158202)[0m Training Progress:   3%|▎         | 4/150 [08:09<4:56:21, 121.79s/it]
+[36m(TaskRunner pid=4158202)[0m Training Progress:   3%|▎         | 5/150 [11:15<5:50:09, 144.89s/it]
+[36m(TaskRunner pid=4158202)[0m Training Progress:   4%|▍         | 6/150 [13:01<5:16:02, 131.68s/it]
+*** SIGTERM received at time=1767723039 on cpu 120 ***
+PC: @     0x7f446e7ad628  (unknown)  pthread_cond_timedwait@@GLIBC_2.3.2
+    @     0x7f446e7b1990  (unknown)  (unknown)
+    @        0x100000000  (unknown)  (unknown)
+[2026-01-06 12:10:39,410 E 4149797 4149797] logging.cc:474: *** SIGTERM received at time=1767723039 on cpu 120 ***
+[2026-01-06 12:10:39,420 E 4149797 4149797] logging.cc:474: PC: @     0x7f446e7ad628  (unknown)  pthread_cond_timedwait@@GLIBC_2.3.2
+[2026-01-06 12:10:39,438 E 4149797 4149797] logging.cc:474:     @     0x7f446e7b1990  (unknown)  (unknown)
+[2026-01-06 12:10:39,459 E 4149797 4149797] logging.cc:474:     @        0x100000000  (unknown)  (unknown)
