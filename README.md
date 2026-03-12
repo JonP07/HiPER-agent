@@ -7,9 +7,6 @@
   <a href="https://arxiv.org/abs/2602.16165">
     <img src="https://img.shields.io/badge/arXiv-Paper-red?style=flat-square&logo=arxiv" alt="arXiv Paper"></a>
   &nbsp;
-    <a href="https://huggingface.co/OptimAI-Lab/HiPER-ALFWorld-7B">
-    <img src="https://img.shields.io/badge/HuggingFace-Models-yellow?style=flat-square&logo=huggingface" alt="HuggingFace Models"></a>
-  &nbsp;
   <a href="">
     <img src="https://img.shields.io/badge/Notion-Blog-blue?logo=notion" alt="Notion Blog"></a>
 </p>
