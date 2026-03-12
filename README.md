@@ -7,7 +7,7 @@
   <a href="https://arxiv.org/abs/2602.16165">
     <img src="https://img.shields.io/badge/arXiv-Paper-red?style=flat-square&logo=arxiv" alt="arXiv Paper"></a>
   &nbsp;
-  <a href="">
+  <a href="https://jonp07.notion.site/HiPER-Hierarchical-Plan-Execute-Reinforcement-Learning-for-Multi-turn-LLM-Agents-314911747a7e801b86e7eee6187d7cd5?source=copy_link">
     <img src="https://img.shields.io/badge/Notion-Blog-blue?logo=notion" alt="Notion Blog"></a>
 </p>
 
