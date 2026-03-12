@@ -17,13 +17,17 @@
 HiPER is a hierarchical reinforcement learning framework for training large language model agents in long-horizon environments. Instead of treating agent behavior as a flat sequence of actions, HiPER explicitly separates high-level planning from low-level execution, and introduces Hierarchical Advantage Estimation (HAE) for more effective credit assignment across multiple time scales. This repository builds on <a href="https://github.com/langfengQ/verl-agent">verl-agent</a>, with extensions to both the agent interface and the training algorithm.
 
 ## Results Summary
+<p align="center">
+    <img src="header_plot.png">
+</p>
+
 <table>
   <thead>
     <tr>
       <th>Algorithm</th>
       <th>Task</th>
       <th>Model</th>
-      <th>Success Rate (Paper)</th>
+      <th>Success Rate</th>
       <th>Training Log</th>
     </tr>
   </thead>
@@ -58,6 +62,8 @@ HiPER is a hierarchical reinforcement learning framework for training large lang
     </tr>
   </tbody>
 </table>
+
+
 
 ## Installation
 ### veRL
