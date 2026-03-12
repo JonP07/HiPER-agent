@@ -187,9 +187,9 @@ def compute_data_metrics(batch: DataProto, use_critic: bool = True) -> Dict[str,
     }
     return metrics
 
-def compute_hgae_metrics(batch: DataProto) -> Dict[str, Any]:
+def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
     """
-    Computes various metrics from a batch of data for HGAE PPO training.
+    Computes various metrics from a batch of data for HAE PPO training.
 
     This function calculates metrics related to scores, rewards, advantages, returns, values,
     and sequence lengths from a batch of data. It provides statistical information (mean, max, min)

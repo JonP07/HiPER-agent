@@ -81,7 +81,7 @@ def _span_from_tags_text(
 
 
 @dataclass
-class HGMaskConfig:
+class HAEMaskConfig:
     # which switch values mean "do NOT start a new subgoal segment"
     keep_values: Tuple[str, ...] = ("KEEP",)
     # if tag extraction fails, fall back to training all valid response tokens as action
@@ -91,11 +91,11 @@ class HGMaskConfig:
 
 
 @torch.no_grad()
-def make_hgae_masks_and_switch(
+def make_hae_masks_and_switch(
     batch,
     tokenizer,
     include_tags_mask: bool = False,
-    cfg: HGMaskConfig = HGMaskConfig(),
+    cfg: HAEMaskConfig = HAEMaskConfig(),
 ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, np.ndarray]:
     """
     Returns:

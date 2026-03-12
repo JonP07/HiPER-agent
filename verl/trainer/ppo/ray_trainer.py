@@ -47,7 +47,7 @@ from verl.trainer.ppo import core_algos
 from verl.trainer.ppo.core_algos import agg_loss
 from verl.trainer.ppo.metric_utils import (
     compute_data_metrics,
-    compute_hgae_metrics,
+    compute_hae_metrics,
     compute_throughout_metrics,
     compute_timing_metrics,
     process_validation_metrics,
@@ -62,8 +62,8 @@ from verl.utils.torch_functional import masked_mean
 from verl.utils.tracking import ValidationGenerationsLogger
 from verl.workers.rollout.async_server import AsyncLLMServerManager
 from gigpo import core_gigpo
-from hier_gae.hier_mask import make_hgae_masks_and_switch
-from hier_gae.core_hgae import HGAEConfig, compute_hgae_advantage, compute_value_mask
+from hiper_hae.hier_mask import make_hae_masks_and_switch
+from hiper_hae.core_hae import HAEConfig, compute_hae_advantage, compute_value_mask
 from agent_system.multi_turn_rollout import TrajectoryCollector, adjust_batch
 
 WorkerType = Type[Worker]
@@ -97,7 +97,7 @@ class AdvantageEstimator(str, Enum):
     RLOO = "rloo"
     GRPO_PASSK = "grpo_passk"
     GiGPO = 'gigpo'
-    HGAE = "hgae"
+    HAE = "hae"
 
 
 @dataclass
@@ -228,7 +228,7 @@ def apply_invalid_action_penalty(data: DataProto, invalid_action_penalty_coef=fl
     return data, metrics
 
 
-def apply_keep_turn_penalty(data: DataProto, keep_penalty: float, keep_penalty_skip_first: bool = False):
+def apply_keep_turn_penalty(data: DataProto, keep_penalty: float):
     """Apply a per-turn reward adjustment when the parsed switch decision is KEEP.
 
     A negative ``keep_penalty`` penalizes KEEP decisions; positive values reward KEEP.
@@ -251,9 +251,6 @@ def apply_keep_turn_penalty(data: DataProto, keep_penalty: float, keep_penalty_s
         if switch_val != "KEEP":
             continue
         keep_count += 1
-
-        if keep_penalty_skip_first and turn_idx is not None and int(turn_idx[i]) <= 0:
-            continue
 
         data_item = data[i]
         prompt_ids = data_item.batch["prompts"]
@@ -514,7 +511,7 @@ class RayPPOTrainer:
         if self.config.algorithm.adv_estimator in [
             AdvantageEstimator.GAE,
             AdvantageEstimator.TURN_GAE,
-            AdvantageEstimator.HGAE
+            AdvantageEstimator.HAE
         ]:
             self.use_critic = True
         elif self.config.algorithm.adv_estimator in [
@@ -1354,16 +1351,14 @@ class RayPPOTrainer:
                             metrics.update(invalid_metrics)
 
                         if (
-                            self.config.algorithm.adv_estimator != AdvantageEstimator.HGAE
+                            self.config.algorithm.adv_estimator != AdvantageEstimator.HAE
                             and self.config.env.get("env_name", "") in {"alfworld/AlfredTWEnvOptions", "WebshopOptions"}
                         ):
                             keep_penalty = float(self.config.algorithm.get("keep_penalty", 0.0))
-                            keep_penalty_skip_first = bool(self.config.algorithm.get("keep_penalty_skip_first", False))
                             if keep_penalty != 0.0:
                                 batch, keep_penalty_metrics = apply_keep_turn_penalty(
                                     batch,
                                     keep_penalty=keep_penalty,
-                                    keep_penalty_skip_first=keep_penalty_skip_first,
                                 )
                                 metrics.update(keep_penalty_metrics)
 
@@ -1378,90 +1373,56 @@ class RayPPOTrainer:
 
                         norm_adv_by_std_in_grpo = self.config.algorithm.get("norm_adv_by_std_in_grpo", True)  # GRPO adv normalization factor
 
-                        if self.config.algorithm.adv_estimator == AdvantageEstimator.HGAE:
+                        if self.config.algorithm.adv_estimator == AdvantageEstimator.HAE:
                             # check if "is_action_valid" in batch.non_tensor_batch
                             assert "is_action_valid" in batch.non_tensor_batch, "'is_action_valid' not found in batch.non_tensor_batch, please make sure the environment is set up correctly to provide this information."
-                            if self.config.algorithm.hgae.norm_adv:
-                                hgae_cfg = HGAEConfig(
+
+                            hae_cfg = HAEConfig(
                                     gamma=self.config.algorithm.gamma,
                                     lam_turn=self.config.algorithm.lam,
-                                    lam_seg=self.config.algorithm.hgae.lam_seg,
+                                    lam_seg=self.config.algorithm.hae.lam_seg,
                                     value_key_low="value_low",
                                     value_key_high="value_high",
-                                    keep_penalty=self.config.algorithm.hgae.get("keep_penalty", -0.3),
-                                    keep_penalty_mode=self.config.algorithm.hgae.get("keep_penalty_mode", "normalized"),
-                                    keep_penalty_normalized_style=self.config.algorithm.hgae.get("keep_penalty_normalized_style", "last_step"),
-                                    keep_penalty_skip_first=self.config.algorithm.hgae.get("keep_penalty_skip_first", False),
+                                    keep_penalty=self.config.algorithm.hae.get("keep_penalty", -0.3),
+                                    keep_penalty_mode=self.config.algorithm.hae.get("keep_penalty_mode", "normalized"),
+                                    keep_penalty_normalized_style=self.config.algorithm.hae.get("keep_penalty_normalized_style", "last_step"),
                                     invalid_action_penalty_coef=(
                                         self.config.actor_rollout_ref.actor.invalid_action_penalty_coef
                                         if self.config.actor_rollout_ref.actor.get("use_invalid_action_penalty", True)
                                         else 0.0
                                     ),
-                                    switch_rate_floor=self.config.algorithm.hgae.get("switch_rate_floor", 0.25),
-                                    switch_rate_floor_coef=self.config.algorithm.hgae.get("switch_rate_floor_coef", 5.0),
-                                    keep_consistency_penalty=self.config.algorithm.hgae.get("keep_consistency_penalty", -0.3),
-                                    keep_consistency_requires_both=self.config.algorithm.hgae.get("keep_consistency_requires_both", True),
-                                    bootstrap_truncated=self.config.algorithm.hgae.get("bootstrap_truncated", False),
+                                    keep_consistency_penalty=self.config.algorithm.hae.get("keep_consistency_penalty", -0.3),
+                                    keep_consistency_requires_both=self.config.algorithm.hae.get("keep_consistency_requires_both", True),
+                                    bootstrap_truncated=self.config.algorithm.hae.get("bootstrap_truncated", False),
                                     assign_high_to_switch=False,
                                     assign_term_to_switch=True,
                                     assign_high_to_subgoal=True,
-                                    norm_adv=True,
+                                    norm_adv=self.config.algorithm.hae.norm_adv,
                                 )
-                            else:
-                                hgae_cfg = HGAEConfig(
-                                    gamma=self.config.algorithm.gamma,
-                                    lam_turn=self.config.algorithm.lam,
-                                    lam_seg=self.config.algorithm.hgae.lam_seg,
-                                    value_key_low="value_low",
-                                    value_key_high="value_high",
-                                    keep_penalty=self.config.algorithm.hgae.get("keep_penalty", -0.3),
-                                    keep_penalty_mode=self.config.algorithm.hgae.get("keep_penalty_mode", "normalized"),
-                                    keep_penalty_normalized_style=self.config.algorithm.hgae.get("keep_penalty_normalized_style", "last_step"),
-                                    keep_penalty_skip_first=self.config.algorithm.hgae.get("keep_penalty_skip_first", True),
-                                    invalid_action_penalty_coef=(
-                                        self.config.actor_rollout_ref.actor.invalid_action_penalty_coef
-                                        if self.config.actor_rollout_ref.actor.get("use_invalid_action_penalty", True)
-                                        else 5.0
-                                    ),
-                                    switch_rate_floor=self.config.algorithm.hgae.get("switch_rate_floor", 0.25),
-                                    switch_rate_floor_coef=self.config.algorithm.hgae.get("switch_rate_floor_coef", 5.0),
-                                    keep_consistency_penalty=self.config.algorithm.hgae.get("keep_consistency_penalty", -0.3),
-                                    keep_consistency_requires_both=self.config.algorithm.hgae.get("keep_consistency_requires_both", True),
-                                    bootstrap_truncated=self.config.algorithm.hgae.get("bootstrap_truncated", False),
-                                    assign_high_to_switch=False,
-                                    assign_term_to_switch=True,
-                                    assign_high_to_subgoal=True,
-                                )
-                            # import pdb; pdb.set_trace()
-                            action_mask, subgoal_mask, switch_mask, is_new_subgoal = make_hgae_masks_and_switch(
+                            action_mask, subgoal_mask, switch_mask, is_new_subgoal = make_hae_masks_and_switch(
                                 batch,
-                                include_tags_mask=hgae_cfg.include_tags_mask,
+                                include_tags_mask=hae_cfg.include_tags_mask,
                                 tokenizer=self.tokenizer,
                             )
-                            # import pdb; pdb.set_trace()
                             batch.non_tensor_batch['switch'] = is_new_subgoal
-                            # build the value masking, for now we want one (or two at boundary) values per turn
+                            # build the value masking
                             batch.batch["value_mask_high"], batch.batch["value_mask_low"], batch.batch["value_mask_term"] = compute_value_mask(batch, self.tokenizer)
-                            # pdb.set_trace()
-                            batch = compute_hgae_advantage(
+                            batch = compute_hae_advantage(
                                 batch,
-                                cfg=hgae_cfg,
+                                cfg=hae_cfg,
                                 action_mask=action_mask,
                                 subgoal_mask=subgoal_mask,
                                 switch_mask=switch_mask)
-                            # building loss mask for HGAE actor update
-                            resp_train_mask = (batch.batch["hgae_lo_mask"] | batch.batch["hgae_hi_mask"] | batch.batch["hgae_term_mask"])  # (N, L) bool
+                            # building loss mask for HiPER actor update
+                            resp_train_mask = (batch.batch["hae_lo_mask"] | batch.batch["hae_hi_mask"] | batch.batch["hae_term_mask"])  # (N, L) bool
                             resp_train_mask = resp_train_mask & batch.batch["response_mask"].bool()
                             attn = batch.batch["attention_mask"]
                             L = batch.batch["responses"].size(1)
                             loss_mask = torch.zeros_like(attn, dtype=torch.bool)
                             loss_mask[:, -L:] = resp_train_mask
                             batch.batch["loss_mask"] = loss_mask.to(attn.dtype)  # keep dtype consistent with other masks
-                            # enable multi_turn so that actor update uses hgae masks
+                            # enable multi_turn so that actor update uses hae masks
                             self.config.actor_rollout_ref.rollout.multi_turn.enable = True
-
-                            # add breakpoint for debugging
-                            # import pdb; pdb.set_trace()
                         else:
                             batch = compute_advantage(
                                 batch,
@@ -1541,8 +1502,8 @@ class RayPPOTrainer:
                     }
                 )
                 # collect metrics
-                if self.config.algorithm.adv_estimator == AdvantageEstimator.HGAE:
-                    metrics.update(compute_hgae_metrics(batch=batch))
+                if self.config.algorithm.adv_estimator == AdvantageEstimator.HAE:
+                    metrics.update(compute_hae_metrics(batch=batch))
                 else:
                     metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))
                 metrics.update(compute_timing_metrics(batch=batch, timing_raw=timing_raw))

@@ -248,7 +248,7 @@ algorithm:
     kl_coef: 0.001
     horizon: 10000
     target_kl: 0.1
-  hgae:
+  hae:
     lam_seg: 0.95
     norm_adv: False
     keep_penalty: 0.0

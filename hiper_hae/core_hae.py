@@ -141,37 +141,32 @@ def build_block_mask(
 
 
 @dataclass
-class HGAEConfig:
+class HAEConfig:
     gamma: float
     lam_turn: float
     lam_seg: float
     # where to read low/high values from
     value_key_low: str = "value_low"
-    value_key_high: Optional[str] = "value_high"  # if None or missing, reuse low
+    value_key_high: str = "value_high"
     value_key_term: str = "value_term"
     # assign high-level advantage to which tokens
     assign_high_to_switch: bool = False
     assign_high_to_subgoal: bool = True
     assign_term_to_switch: bool = True
     include_tags_mask: bool = True
-    norm_adv: bool = False  # whether to normalize advantages before masking
+    norm_adv: bool = False  # whether to normalize advantages
     bootstrap_truncated: bool = False  # if episode truncates, bootstrap from current value
     keep_penalty: float = 0.0  # negative value penalizes KEEP decisions
-    keep_penalty_skip_first: bool = False  # don't penalize the first turn
-    keep_penalty_mode: str = "fixed"  # "fixed" or "normalized": how to apply keep penalty
-    # New: control how normalized keep penalty is applied: "distribute" (default) or "last_step"
-    keep_penalty_normalized_style: str = "last_step"
+    keep_penalty_mode: str = "fixed"  # "fixed" or "normalized"
     invalid_action_penalty_coef: float = 0.0  # subtract from per-turn reward if action invalid
-    switch_rate_floor: float = 0.0  # desired minimum switch rate per episode
-    switch_rate_floor_coef: float = 0.0  # penalty weight for switch-rate floor
     keep_consistency_penalty: float = 0.0  # negative value penalizes subgoal change on KEEP
     keep_consistency_requires_both: bool = True  # only penalize if both subgoals exist
 
 
 @torch.no_grad()
-def compute_hgae_advantage(
+def compute_hae_advantage(
     batch,
-    cfg: HGAEConfig,
+    cfg: HAEConfig,
     *,
     action_mask: Optional[torch.Tensor] = None,   # (N, L) bool
     subgoal_mask: Optional[torch.Tensor] = None,  # (N, L) bool
@@ -190,26 +185,22 @@ def compute_hgae_advantage(
     groups = _group_indices_by_traj(traj_uid)
 
     r = _as_torch_1d(batch.non_tensor_batch["rewards"], device=device, dtype=torch.float32)  # (N,)
-    print('penalty cfg:', cfg.keep_penalty, cfg.keep_penalty_mode, cfg.keep_penalty_skip_first, cfg.keep_penalty_normalized_style)
     if cfg.keep_penalty != 0.0:
         if cfg.keep_penalty_mode == "fixed":
-            # Original mode: apply fixed penalty per KEEP turn
+            # apply fixed penalty per KEEP turn
             switch_t = torch.as_tensor(switch, device=device, dtype=torch.bool)
             keep_mask = ~switch_t
-            if cfg.keep_penalty_skip_first:
-                keep_mask = keep_mask & torch.as_tensor(turn_idx > 0, device=device, dtype=torch.bool)
             if keep_mask.any():
                 r = r + keep_mask.to(torch.float32) * cfg.keep_penalty
         elif cfg.keep_penalty_mode == "normalized":
-            # Normalized mode: penalty proportional to KEEP ratio.
+            # penalty proportional to KEEP ratio
             for tid, idxs in groups.items():
                 idxs = sorted(idxs, key=lambda i: turn_idx[i])
-                # import pdb; pdb.set_trace()
                 if len(idxs) <= 1:
                     continue
-                # Count KEEP turns (respecting skip_first setting)
+                # Count KEEP turns
                 keep_count = 0
-                start_pos = 1 if cfg.keep_penalty_skip_first else 0
+                start_pos = 0
                 for pos in range(start_pos, len(idxs)):
                     if not bool(switch[idxs[pos]]):
                         keep_count += 1
@@ -217,17 +208,12 @@ def compute_hgae_advantage(
                     total_turns = len(idxs) - start_pos
                     if total_turns > 0:
                         keep_ratio = keep_count / total_turns
-                        if getattr(cfg, "keep_penalty_normalized_style", "distribute") == "last_step":
-                            # old behavior: apply once at the final turn
-                            normalized_penalty = cfg.keep_penalty * keep_ratio
-                            r[idxs[-1]] = r[idxs[-1]] + normalized_penalty
-                        else:
-                            # default/new behavior: distribute evenly to each KEEP turn
-                            per_keep_penalty = cfg.keep_penalty * keep_ratio / keep_count
-                            for pos in range(start_pos, len(idxs)):
-                                i = idxs[pos]
-                                if not bool(switch[i]):
-                                    r[i] = r[i] + per_keep_penalty               
+                        # distribute evenly to each KEEP turn
+                        per_keep_penalty = cfg.keep_penalty * keep_ratio / keep_count
+                        for pos in range(start_pos, len(idxs)):
+                            i = idxs[pos]
+                            if not bool(switch[i]):
+                                r[i] = r[i] + per_keep_penalty               
         else:
             raise ValueError(f"Unknown keep_penalty_mode: {cfg.keep_penalty_mode}. Must be 'fixed' or 'normalized'.")
     if cfg.invalid_action_penalty_coef != 0.0 and "is_action_valid" in batch.non_tensor_batch:
@@ -235,17 +221,6 @@ def compute_hgae_advantage(
         invalid = (1.0 - valid).clamp_min(0.0)
         if invalid.any():
             r = r - cfg.invalid_action_penalty_coef * invalid
-    # switch-rate floor penalty (episode-level, applied to last turn)
-    if cfg.switch_rate_floor_coef > 0.0 and cfg.switch_rate_floor > 0.0:
-        for tid, idxs in groups.items():
-            idxs = sorted(idxs, key=lambda i: turn_idx[i])
-            if len(idxs) <= 1:
-                continue
-            switch_count = float(np.asarray(switch[idxs], dtype=np.bool_).sum())
-            rate = switch_count / float(len(idxs) - 1)
-            if rate < cfg.switch_rate_floor:
-                penalty = cfg.switch_rate_floor_coef * (cfg.switch_rate_floor - rate)
-                r[idxs[-1]] = r[idxs[-1]] - float(penalty)
 
     # subgoal consistency penalty on KEEP turns
     if cfg.keep_consistency_penalty != 0.0 and subgoal_mask is not None:
@@ -474,11 +449,12 @@ def compute_hgae_advantage(
     #   where q_t=1 for SWITCH, 0 for KEEP; beta_t=P(SWITCH|s_t,o_{t-1})
     # ============================================================
     if has_term:
+        # For now we implement a simplified version of the termination advantage that directly uses delta_switch without multiplying by (q_t - beta_t).
+
         # q_t = torch.as_tensor(switch, device=device, dtype=torch.float32)  # (N,)
         # delta_switch = v_high - v_low  # (N,)
-
-        # For now we implement a simplified version of the termination advantage that directly uses delta_switch without multiplying by (q_t - beta_t).
         # adv_term_step = delta_switch
+
         # or if there is a termination head
         adv_term_step = ret_term_step - v_term
 
@@ -567,9 +543,9 @@ def compute_hgae_advantage(
     batch.batch["returns_high"] = returns_high
     batch.batch["advantages_term"] = advantages_term
     batch.batch["returns_term"] = returns_term
-    batch.batch["hgae_lo_mask"] = lo_mask
-    batch.batch["hgae_hi_mask"] = hi_mask
-    batch.batch["hgae_term_mask"] = term_mask
+    batch.batch["hae_lo_mask"] = lo_mask
+    batch.batch["hae_hi_mask"] = hi_mask
+    batch.batch["hae_term_mask"] = term_mask
     batch.batch["advantages"] = advantages_low + advantages_high + advantages_term
 
 
@@ -625,8 +601,7 @@ def compute_value_mask(
 
         for t in range(T):
             i = idxs[t]
-            # if this turn is a boundary turn, assign two value positions: high-level value at first response token, and low-level value at the first token after </subgoal> (if exists, if not, first token after </subgoal>\n)
-            # import pdb; pdb.set_trace()
+            # if this turn is a boundary turn, assign two value positions: high-level value at first response token, and low-level value at the first token after </subgoal>
             if t == 0 or bool(switch[i]):
                 # first token
                 if response_mask[i, 0]:
@@ -644,9 +619,8 @@ def compute_value_mask(
                     else:
                         # no </subgoal> or </switch> found, fallback to first token as low-level value
                         value_mask_low[i, 0] = True
-                # import pdb; pdb.set_trace()
             else:
-                # non-boundary turn: only first token after </subgoal> or </subgoal>\n
+                # non-boundary turn: only first token after </subgoal>
                 seq_ids = responses[i, : response_mask[i].long().sum().item()].tolist()
                 text, offsets = _build_text_and_offsets(tokenizer, seq_ids)
                 p_after_close = _find_token_after_tag(text, offsets, "<subgoal>", close_subgoal_tags)
@@ -661,50 +635,9 @@ def compute_value_mask(
                         # no </subgoal> or </switch> found, fallback to first token as low-level value
                         value_mask_low[i, 0] = True
                 
-            # term head: one value per turn at first valid response token
+            # term: one value per turn at first valid response token
             if response_mask[i].any():
                 first_pos = int(response_mask[i].float().argmax().item())
                 value_mask_term[i, first_pos] = True
     return value_mask_high, value_mask_low, value_mask_term
 
-if __name__ == "__main__":
-    from verl.utils import hf_tokenizer
-
-    tokenizer = hf_tokenizer("Qwen/Qwen2.5-0.5B-Instruct")
-    print("Tokenizer loaded.")
-
-    test_response = "<switch>SWITCH</switch>\n<subgoal>Do something.</subgoal>\n<action>Now continue</action>"
-    close_subgoal_tags = [
-        "</subgoal>",
-        # "</subgoal>\n",
-        # "]</subgoal>",
-        # "]</subgoal>\n",
-        # ".</subgoal>",
-        # ".</subgoal>\n",
-        # ")</subgoal>",
-        # ")</subgoal>\n",
-    ]
-    close_switch_tags = ["</switch>", "</switch>\n"]
-    resp_ids = tokenizer.encode(test_response, add_special_tokens=False)
-    text, offsets = _build_text_and_offsets(tokenizer, resp_ids)
-
-    print("Decoded text:")
-    print(text)
-
-    subgoal_span = _find_tag_char_span(text, "<subgoal>", close_subgoal_tags)
-    if subgoal_span is not None:
-        _, s_c, s_e, _ = subgoal_span
-        print("Subgoal content:", text[s_c:s_e])
-        p_after = _find_token_after_tag(text, offsets, "<subgoal>", close_subgoal_tags)
-        print("Token index after </subgoal>:", p_after)
-    else:
-        print("No </subgoal> found.")
-
-    switch_span = _find_tag_char_span(text, "<switch>", close_switch_tags)
-    if switch_span is not None:
-        _, s_c, s_e, _ = switch_span
-        print("Switch content:", text[s_c:s_e])
-        p_after = _find_token_after_tag(text, offsets, "<switch>", close_switch_tags)
-        print("Token index after </switch>:", p_after)
-    else:
-        print("No </switch> found.")
