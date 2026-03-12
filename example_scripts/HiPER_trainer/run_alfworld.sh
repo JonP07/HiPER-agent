@@ -1,30 +1,11 @@
-source /code/hongpaul-sandbox/options/miniconda3/bin/activate /code/hongpaul-sandbox/options/miniconda3/envs/options
-
-cd /code/hongpaul-sandbox/temp/hierarchy_agent/
-
-wandb login b8f38344ec7231ee89baa74ef7209dd5a43df6b2
-
 set -x
 ENGINE=${1:-vllm}
-SEED=${2:-0}
-shift 2 || true
-
-mkdir -p logs
-LOGFILE="logs/ppo_qwen2.5_1.5b_seed${SEED}.txt"
-export PYTHONUNBUFFERED=1
-exec > "$LOGFILE" 2>&1
-
-export ALFWORLD_DATA=/code/hongpaul-sandbox/temp/hierarchy_agent/alfworld_data
-echo "ALFWORLD_DATA set to $ALFWORLD_DATA"
-
 export VLLM_ATTENTION_BACKEND=XFORMERS
-export WANDB_ENTITY=mhong-university-of-minnesota
 
 num_cpus_per_env_worker=0.1 # The CPU resource allocated for each environment worker. If you want to use less CPU resources, you can decrease this value.
 
-train_data_size=16 # match GRPO and GiGPO configuration (16 × 8)
+train_data_size=128 # match GRPO and GiGPO configuration (16 × 8)
 val_data_size=128
-group_size=8
 
 # We only use data preparation to indicate the modality and the data size.
 python3 -m examples.data_preprocess.prepare \
@@ -32,8 +13,10 @@ python3 -m examples.data_preprocess.prepare \
     --train_data_size $train_data_size \
     --val_data_size $val_data_size
 
+# For env_name, HiPER requires alfworld/AlfredTWEnvOptions, which incorporates the Plan-Execute prompting. 
+# For reward_manager, we use multi_turn, which is different from the default episode reward manager (used in original verl-agent repo), to support multi-turn feedback.
 python3 -m verl.trainer.main_ppo \
-    algorithm.adv_estimator=grpo \
+    algorithm.adv_estimator=hae \
     data.train_files=$HOME/data/verl-agent/text/train.parquet \
     data.val_files=$HOME/data/verl-agent/text/test.parquet \
     data.train_batch_size=$train_data_size \
@@ -47,7 +30,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.optim.lr=1e-6 \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.actor.ppo_mini_batch_size=256 \
-    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=32 \
+    actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=16 \
     actor_rollout_ref.actor.use_kl_loss=True \
     actor_rollout_ref.actor.kl_loss_coef=0.01 \
     actor_rollout_ref.actor.kl_loss_type=low_var_kl \
@@ -67,19 +50,33 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     actor_rollout_ref.actor.use_invalid_action_penalty=True \
     actor_rollout_ref.actor.invalid_action_penalty_coef=0.1 \
+    critic.optim.lr=1e-5 \
+    critic.model.use_remove_padding=True \
+    critic.model.path=Qwen/Qwen2.5-1.5B-Instruct \
+    critic.model.enable_gradient_checkpointing=True \
+    critic.ppo_micro_batch_size_per_gpu=16 \
+    critic.model.fsdp_config.param_offload=False \
+    critic.model.fsdp_config.optimizer_offload=False \
+    critic.use_two_heads_critic=False \
+    critic.use_three_heads_critic=True \
     algorithm.use_kl_in_reward=False \
-    env.env_name=alfworld/AlfredTWEnv \
-    env.seed=$SEED \
+    algorithm.hae.norm_adv=True \
+    algorithm.hae.keep_penalty=-0.3 \
+    algorithm.hae.keep_consistency_penalty=-0.3 \
+    algorithm.hae.bootstrap_truncated=True \
+    env.env_name=alfworld/AlfredTWEnvOptions \
+    env.seed=6 \
     env.max_steps=50 \
-    env.rollout.n=$group_size \
     env.resources_per_worker.num_cpus=$num_cpus_per_env_worker \
-    trainer.critic_warmup=0 \
+    reward_model.reward_manager=multi_turn \
     trainer.logger=['console','wandb'] \
+    trainer.log_val_generations=10 \
     trainer.project_name='verl_agent_alfworld' \
-    trainer.experiment_name="grpo_qwen2.5_1.5b_seed_${SEED}" \
+    trainer.experiment_name='hae_qwen2.5_1.5b' \
     trainer.n_gpus_per_node=4 \
     trainer.nnodes=1 \
     trainer.save_freq=-1 \
     trainer.test_freq=5 \
     trainer.total_epochs=150 \
+    trainer.resume_mode='disable' \
     trainer.val_before_train=True $@

@@ -1214,16 +1214,6 @@ class RayPPOTrainer:
                                                                 is_train=True,
                                                                 )
                         
-                        # inspect generated content for debugging
-                        # for i in range(len(gen_batch_output.batch['input_ids'])):
-                        #     input_ids = gen_batch_output.batch['input_ids'][i]
-                        #     response_ids = gen_batch_output.batch['responses'][i]
-                        #     input_text = self.tokenizer.decode(input_ids, skip_special_tokens=True)
-                        #     response_text = self.tokenizer.decode(response_ids, skip_special_tokens=True)
-                        #     print(f"Input {i}: {input_text}")
-                        #     print(f"Response {i}: {response_text}")
-                        #     print("------")
-                        # print('generation end')
                     if self.config.algorithm.adv_estimator == AdvantageEstimator.REMAX:
                         with _timer("gen_max", timing_raw):
                             gen_baseline_batch = deepcopy(gen_batch)
@@ -1264,8 +1254,6 @@ class RayPPOTrainer:
                     # Please take care when you implement group based adv computation such as GRPO and rloo
                     if self.config.trainer.balance_batch:
                         self._balance_batch(batch, metrics=metrics)
-                    # for debugging check batch balance
-                    # print(self.config.trainer.balance_batch)
                     # compute global_valid tokens
                     batch.meta_info["global_token_num"] = torch.sum(batch.batch["attention_mask"], dim=-1).tolist()
 
@@ -1279,8 +1267,6 @@ class RayPPOTrainer:
                             future_reward = compute_reward_async.remote(batch, self.config, self.tokenizer)
                         else:
                             reward_tensor, reward_extra_infos_dict = compute_reward(batch, self.reward_fn)
-                    # for debugging, print reward tensors
-                    # print(f"Reward tensor:", reward_tensor)
 
                     # recompute old_log_probs
                     with _timer("old_log_prob", timing_raw):
