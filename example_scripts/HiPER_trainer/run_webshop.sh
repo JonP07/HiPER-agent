@@ -13,8 +13,9 @@ python3 -m examples.data_preprocess.prepare \
     --train_data_size $train_data_size \
     --val_data_size $val_data_size
 
-# For env_name, HiPER requires alfworld/AlfredTWEnvOptions, which incorporates the Plan-Execute prompting. 
+# For env_name, HiPER requires WebshopOptions, which incorporates the Plan-Execute prompting. 
 # For reward_manager, we use multi_turn, which is different from the default episode reward manager (used in original verl-agent repo), to support multi-turn feedback.
+# In WebShop, bootstrap_truncated should be set to False, since the agent needs to actively stop the episode by clicking "buy now" to get the reward, which is different from Alfworld where the episode can end naturally when the task is completed.
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=hae \
     data.train_files=$HOME/data/verl-agent/text/train.parquet \
@@ -61,17 +62,18 @@ python3 -m verl.trainer.main_ppo \
     critic.use_three_heads_critic=True \
     algorithm.use_kl_in_reward=False \
     algorithm.hae.norm_adv=True \
-    algorithm.hae.keep_penalty=-0.3 \
+    algorithm.hae.keep_penalty=-3.5 \
+    algorithm.hae.keep_penalty_mode=normalized \
     algorithm.hae.keep_consistency_penalty=-0.3 \
-    algorithm.hae.bootstrap_truncated=True \
-    env.env_name=alfworld/AlfredTWEnvOptions \
+    algorithm.hae.bootstrap_truncated=False \
+    env.env_name=WebshopOptions \
     env.seed=6 \
     env.max_steps=50 \
     env.resources_per_worker.num_cpus=$num_cpus_per_env_worker \
     reward_model.reward_manager=multi_turn \
     trainer.logger=['console','wandb'] \
     trainer.log_val_generations=10 \
-    trainer.project_name='hiper_alfworld' \
+    trainer.project_name='hiper_webshop' \
     trainer.experiment_name='hiper_qwen2.5_1.5b' \
     trainer.n_gpus_per_node=4 \
     trainer.nnodes=1 \
