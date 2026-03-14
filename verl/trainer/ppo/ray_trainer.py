@@ -1371,7 +1371,6 @@ class RayPPOTrainer:
                                     value_key_high="value_high",
                                     keep_penalty=self.config.algorithm.hae.get("keep_penalty", -0.3),
                                     keep_penalty_mode=self.config.algorithm.hae.get("keep_penalty_mode", "normalized"),
-                                    keep_penalty_normalized_style=self.config.algorithm.hae.get("keep_penalty_normalized_style", "last_step"),
                                     invalid_action_penalty_coef=(
                                         self.config.actor_rollout_ref.actor.invalid_action_penalty_coef
                                         if self.config.actor_rollout_ref.actor.get("use_invalid_action_penalty", True)
