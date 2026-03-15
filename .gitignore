@@ -11,6 +11,7 @@ outputs/
 wandb/
 alfworld_rollout_data/
 webshop_rollout_data/
+example_scripts/HiPER_trainer/run_alfworld_test.sh
 
 **/*.pt
 **/checkpoints
