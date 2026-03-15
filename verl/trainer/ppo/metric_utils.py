@@ -208,8 +208,6 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
             - response_length/mean, max, min, clip_ratio: Statistics about response lengths
             - prompt_length/mean, max, min, clip_ratio: Statistics about prompt lengths
     """
-    sequence_score = batch.batch["token_level_scores"].sum(-1)
-    sequence_reward = batch.batch["token_level_rewards"].sum(-1)
 
     advantages_low = batch.batch["advantages_low"]
     returns_low = batch.batch["returns_low"]
@@ -239,28 +237,14 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
     valid_adv_low = torch.masked_select(advantages_low, response_mask)
     valid_returns_low = torch.masked_select(returns_low, response_mask)
     valid_values_low = torch.masked_select(values_low, response_mask)
-    return_diff_var_low = torch.var(valid_returns_low - valid_values_low)
-    return_var_low = torch.var(valid_returns_low)
     valid_adv_high = torch.masked_select(advantages_high, response_mask)
     valid_returns_high = torch.masked_select(returns_high, response_mask)
     valid_values_high = torch.masked_select(values_high, response_mask)
-    return_diff_var_high = torch.var(valid_returns_high - valid_values_high)
-    return_var_high = torch.var(valid_returns_high)
     if has_term:
         valid_adv_term = torch.masked_select(advantages_term, response_mask)
         valid_returns_term = torch.masked_select(returns_term, response_mask)
         valid_values_term = torch.masked_select(values_term, response_mask)
-        return_diff_var_term = torch.var(valid_returns_term - valid_values_term)
-        return_var_term = torch.var(valid_returns_term)
     metrics = {
-        # score
-        "critic/score/mean": torch.mean(sequence_score).detach().item(),
-        "critic/score/max": torch.max(sequence_score).detach().item(),
-        "critic/score/min": torch.min(sequence_score).detach().item(),
-        # reward
-        "critic/rewards/mean": torch.mean(sequence_reward).detach().item(),
-        "critic/rewards/max": torch.max(sequence_reward).detach().item(),
-        "critic/rewards/min": torch.min(sequence_reward).detach().item(),
         # adv low
         "critic/advantages_low/mean": torch.mean(valid_adv_low).detach().item(),
         "critic/advantages_low/max": torch.max(valid_adv_low).detach().item(),
@@ -273,8 +257,6 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
         "critic/values_low/mean": torch.mean(valid_values_low).detach().item(),
         "critic/values_low/max": torch.max(valid_values_low).detach().item(),
         "critic/values_low/min": torch.min(valid_values_low).detach().item(),
-        # vf explained var low
-        "critic/vf_explained_var_low": (1.0 - return_diff_var_low / (return_var_low + 1e-5)).detach().item(),
         # adv high
         "critic/advantages_high/mean": torch.mean(valid_adv_high).detach().item(),
         "critic/advantages_high/max": torch.max(valid_adv_high).detach().item(),
@@ -287,8 +269,6 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
         "critic/values_high/mean": torch.mean(valid_values_high).detach().item(),
         "critic/values_high/max": torch.max(valid_values_high).detach().item(),
         "critic/values_high/min": torch.min(valid_values_high).detach().item(),
-        # vf explained var high
-        "critic/vf_explained_var_high": (1.0 - return_diff_var_high / (return_var_high + 1e-5)).detach().item(),
         # adv term
         **(
             {
@@ -301,7 +281,6 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
                 "critic/values_term/mean": torch.mean(valid_values_term).detach().item(),
                 "critic/values_term/max": torch.max(valid_values_term).detach().item(),
                 "critic/values_term/min": torch.min(valid_values_term).detach().item(),
-                "critic/vf_explained_var_term": (1.0 - return_diff_var_term / (return_var_term + 1e-5)).detach().item(),
             }
             if has_term
             else {}
