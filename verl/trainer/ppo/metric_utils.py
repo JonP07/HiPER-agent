@@ -224,13 +224,6 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
     prompt_mask = batch.batch["attention_mask"][:, :-max_response_length].bool()
     response_mask = batch.batch["attention_mask"][:, -max_response_length:].bool()
     max_prompt_length = prompt_mask.size(-1)
-    # average number of switches per episode
-    switch = np.asarray(batch.non_tensor_batch["switch"], dtype=bool)
-    traj_uid = np.asarray(batch.non_tensor_batch["traj_uid"])
-    uniq, inv = np.unique(traj_uid, return_inverse=True)
-    switch_counts = np.zeros(len(uniq), dtype=np.int32)
-    np.add.at(switch_counts, inv, switch.astype(np.int32))
-
     response_info = _compute_response_info(batch)
     prompt_length = response_info["prompt_length"]
     response_length = response_info["response_length"]
@@ -308,12 +301,6 @@ def compute_hae_metrics(batch: DataProto) -> Dict[str, Any]:
             batch.non_tensor_batch["episode_lengths"].max().item(),
         "episode/length/min": 
             batch.non_tensor_batch["episode_lengths"].min().item(),
-        "episode/switch_count/mean":
-            switch_counts.mean().item(),
-        "episode/switch_count/max":
-            switch_counts.max().item(),
-        "episode/switch_count/min":
-            switch_counts.min().item(),
         "episode/tool_call_count/mean": 
             batch.non_tensor_batch["tool_callings"].mean().item(),
         "episode/tool_call_count/max":
