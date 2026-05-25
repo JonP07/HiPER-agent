@@ -236,7 +236,8 @@
       }
 
       .figure-shell {
-        overflow: hidden;
+        margin: 0;
+        overflow: visible;
       }
 
       .figure-pad {
@@ -514,10 +515,10 @@
           <div class="intro-text">
             <h2 id="overview-title">Overview</h2>
             <p>
-              Multi-turn agents often fail for reasons that are hard to diagnose with a flat action sequence. A bad final reward can reflect a poor plan, weak execution, or a credit assignment signal that arrives too late to train the right decision.
+              Reinforcement learning for multi-turn LLM agents is difficult in long-horizon environments with sparse, delayed rewards. Flat policies choose one action at a time, so a final success or failure must be traced back across many earlier decisions, often causing unstable and inefficient learning.
             </p>
             <p>
-              HiPER makes the hierarchy explicit. It represents agent behavior as plans and executions, extends the verl-agent training stack, and uses Hierarchical Advantage Estimation to assign credit across both temporal scales.
+              HiPER makes the agent's implicit hierarchy explicit: a high-level planner proposes or keeps subgoals, a low-level executor acts under the current subgoal, and Hierarchical Advantage Estimation assigns credit both within each subgoal segment and across subgoal switches.
             </p>
           </div>
         </div>
@@ -528,7 +529,7 @@
         <p class="section-lede">
           The figure summarizes HiPER performance across ALFWorld and WebShop experiments.
         </p>
-        <figure class="paper-block figure-shell">
+        <figure class="figure-shell">
           <div class="figure-pad">
             <img
               src="./assets/header_plot.png"
