@@ -207,13 +207,11 @@
       }
 
       .intro-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        padding: 30px;
+        padding: 24px 30px;
       }
 
       .intro-text {
-        max-width: 780px;
+        max-width: none;
         font-size: 1.05rem;
       }
 
@@ -253,13 +251,6 @@
         border: 1px solid var(--line);
         border-radius: 6px;
         background: #fff;
-      }
-
-      figcaption {
-        border-top: 1px solid var(--line);
-        padding: 0.9rem 1rem 1rem;
-        color: var(--muted);
-        font-size: 0.93rem;
       }
 
       .approach-grid {
@@ -533,9 +524,9 @@
       </section>
 
       <section class="section" aria-labelledby="figure-title">
-        <h2 id="figure-title">Training and evaluation snapshot</h2>
+        <h2 id="figure-title">Performance Summary</h2>
         <p class="section-lede">
-          The figure summarizes HiPER performance across ALFWorld and WebShop experiments. It is bundled inside the GitHub Pages source directory so the deployed page can load it directly.
+          The figure summarizes HiPER performance across ALFWorld and WebShop experiments.
         </p>
         <figure class="paper-block figure-shell">
           <div class="figure-pad">
@@ -544,9 +535,6 @@
               alt="HiPER result plots comparing ALFWorld and WebShop training and evaluation performance."
             >
           </div>
-          <figcaption>
-            Summary plot for the HiPER experiments.
-          </figcaption>
         </figure>
       </section>
 
