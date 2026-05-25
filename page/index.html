@@ -51,24 +51,12 @@
         max-width: 100%;
       }
 
-      .notice {
-        border-bottom: 1px solid var(--line);
-        background: #202635;
-        color: #eef3ff;
-        font-size: 0.9rem;
-      }
-
-      .notice-inner,
       .nav-inner,
       .hero,
       .section,
       .footer-inner {
         width: min(1060px, calc(100% - 36px));
         margin: 0 auto;
-      }
-
-      .notice-inner {
-        padding: 0.45rem 0;
       }
 
       .top-nav {
@@ -143,10 +131,10 @@
         max-width: 980px;
         margin: 0 auto 1.15rem;
         font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(2.45rem, 6.5vw, 5.35rem);
+        font-size: clamp(2rem, 4.8vw, 3.8rem);
         font-weight: 680;
         letter-spacing: 0;
-        line-height: 0.98;
+        line-height: 1.08;
       }
 
       .subtitle {
@@ -220,40 +208,17 @@
 
       .intro-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 280px;
-        gap: 28px;
+        grid-template-columns: 1fr;
         padding: 30px;
       }
 
       .intro-text {
-        max-width: 720px;
+        max-width: 780px;
         font-size: 1.05rem;
       }
 
-      .intro-text p:last-child,
-      .side-facts p:last-child {
+      .intro-text p:last-child {
         margin-bottom: 0;
-      }
-
-      .side-facts {
-        border-left: 1px solid var(--line);
-        padding-left: 24px;
-      }
-
-      .fact {
-        margin-bottom: 1rem;
-      }
-
-      .fact strong {
-        display: block;
-        color: var(--red);
-        font-size: 1.45rem;
-        line-height: 1.05;
-      }
-
-      .fact span {
-        color: var(--muted);
-        font-size: 0.92rem;
       }
 
       h2 {
@@ -295,17 +260,6 @@
         padding: 0.9rem 1rem 1rem;
         color: var(--muted);
         font-size: 0.93rem;
-      }
-
-      .caption-link {
-        font-weight: 720;
-        text-decoration: none;
-      }
-
-      .caption-link:hover,
-      .caption-link:focus-visible {
-        text-decoration: underline;
-        outline: none;
       }
 
       .approach-grid {
@@ -483,23 +437,12 @@
           grid-template-columns: 1fr;
         }
 
-        .side-facts {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 1rem;
-          border-left: 0;
-          border-top: 1px solid var(--line);
-          padding-left: 0;
-          padding-top: 20px;
-        }
-
         .approach-grid {
           grid-template-columns: 1fr;
         }
       }
 
       @media (max-width: 560px) {
-        .notice-inner,
         .nav-inner,
         .hero,
         .section,
@@ -508,7 +451,7 @@
         }
 
         h1 {
-          font-size: clamp(2.25rem, 14vw, 3.8rem);
+          font-size: clamp(1.9rem, 10vw, 3.1rem);
         }
 
         .hero {
@@ -528,10 +471,6 @@
           padding: 20px;
         }
 
-        .side-facts {
-          grid-template-columns: 1fr;
-        }
-
         .pill {
           width: 100%;
         }
@@ -543,12 +482,6 @@
     </style>
   </head>
   <body>
-    <div class="notice">
-      <div class="notice-inner">
-        HiPER project page. Results, code links, and setup commands are collected here for quick review.
-      </div>
-    </div>
-
     <nav class="top-nav" aria-label="Primary navigation">
       <div class="nav-inner">
         <a class="brand" href="#top">HiPER</a>
@@ -596,20 +529,6 @@
               HiPER makes the hierarchy explicit. It represents agent behavior as plans and executions, extends the verl-agent training stack, and uses Hierarchical Advantage Estimation to assign credit across both temporal scales.
             </p>
           </div>
-          <aside class="side-facts" aria-label="Headline results">
-            <p class="fact">
-              <strong>97.4%</strong>
-              <span>ALFWorld success with Qwen2.5-7B-Instruct</span>
-            </p>
-            <p class="fact">
-              <strong>83.3%</strong>
-              <span>WebShop success with Qwen2.5-7B-Instruct</span>
-            </p>
-            <p class="fact">
-              <strong>2 levels</strong>
-              <span>Planning and execution credit assignment</span>
-            </p>
-          </aside>
         </div>
       </section>
 
@@ -626,7 +545,7 @@
             >
           </div>
           <figcaption>
-            Summary plot for the HiPER experiments. <a class="caption-link" href="./assets/header_plot.png">Open the full-size figure.</a>
+            Summary plot for the HiPER experiments.
           </figcaption>
         </figure>
       </section>
