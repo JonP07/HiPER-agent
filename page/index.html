@@ -515,10 +515,13 @@
           <div class="intro-text">
             <h2 id="overview-title">Overview</h2>
             <p>
-              Reinforcement learning for multi-turn LLM agents is difficult in long-horizon environments with sparse, delayed rewards. Flat policies choose one action at a time, so a final success or failure must be traced back across many earlier decisions, often causing unstable and inefficient learning.
+              Long-horizon LLM agents rarely succeed as a flat sequence of isolated actions. They usually make progress by pursuing intermediate subgoals that persist for several steps, but standard RL treats each action at a single time scale, making sparse final rewards hard to assign to the decisions that actually mattered.
             </p>
             <p>
-              HiPER makes the agent's implicit hierarchy explicit: a high-level planner proposes or keeps subgoals, a low-level executor acts under the current subgoal, and Hierarchical Advantage Estimation assigns credit both within each subgoal segment and across subgoal switches.
+              HiPER turns this implicit hierarchy into an explicit Plan-Execute policy: the agent can keep the current subgoal or switch to a new one, then execute actions under that subgoal while still adapting after each observation. This avoids both one-step myopia and rigid upfront plans.
+            </p>
+            <p>
+              Hierarchical Advantage Estimation matches the learning signal to this structure, assigning credit within subgoal segments and across subgoal switches so planning and execution are optimized together for long-horizon tasks such as ALFWorld and WebShop.
             </p>
           </div>
         </div>
