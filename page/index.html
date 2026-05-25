@@ -515,13 +515,10 @@
           <div class="intro-text">
             <h2 id="overview-title">Overview</h2>
             <p>
-              Long-horizon LLM agents rarely succeed as a flat sequence of isolated actions. They usually make progress by pursuing intermediate subgoals that persist for several steps, but standard RL treats each action at a single time scale, making sparse final rewards hard to assign to the decisions that actually mattered.
+              HiPER addresses long-horizon reinforcement learning for interactive language agents by making their implicit hierarchical behavior explicit and aligning the training signal with that structure. Rather than treating the agent as a flat policy that selects one action at a time, HiPER separates high-level planning from low-level execution: at each step, the agent decides whether to keep the current subgoal or switch to a new one, then acts according to that subgoal. This Plan-Execute structure helps the agent maintain temporally extended objectives while still adapting dynamically, reducing failures such as task drift, premature switching, and repetitive ineffective actions. To train this hierarchy, HiPER introduces Hierarchical Advantage Estimation, which propagates credit both within subgoal segments and across segments, providing a more suitable learning signal than flat advantage estimation and offering benefits in unbiasedness and variance reduction. 
             </p>
             <p>
-              HiPER turns this implicit hierarchy into an explicit Plan-Execute policy: the agent can keep the current subgoal or switch to a new one, then execute actions under that subgoal while still adapting after each observation. This avoids both one-step myopia and rigid upfront plans.
-            </p>
-            <p>
-              Hierarchical Advantage Estimation matches the learning signal to this structure, assigning credit within subgoal segments and across subgoal switches so planning and execution are optimized together for long-horizon tasks such as ALFWorld and WebShop.
+              Empirically, HiPER achieves strong results on interactive benchmarks such as ALFWorld and WebShop, reaching 97.4% success on ALFWorld and 83.3% on WebShop with Qwen2.5-7B-Instruct. Its key message is that effective long-horizon agent training requires both an explicit behavioral hierarchy and a credit assignment method matched to that hierarchy: planning alone is insufficient if learning remains flat, and better credit assignment depends on exposing the right decision structure.
             </p>
           </div>
         </div>
