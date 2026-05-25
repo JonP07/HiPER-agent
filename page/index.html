@@ -11,18 +11,17 @@
     <style>
       :root {
         color-scheme: light;
-        --paper: #f7f4ec;
-        --paper-strong: #fffdf7;
-        --ink: #181a1f;
-        --muted: #5f635f;
-        --line: #d8d0c3;
-        --green: #27745d;
-        --green-dark: #143f35;
-        --coral: #b84a38;
-        --gold: #bd7a21;
-        --plum: #64508f;
-        --code: #202225;
-        --shadow: 0 18px 50px rgba(24, 26, 31, 0.12);
+        --bg: #f8f9fb;
+        --paper: #ffffff;
+        --ink: #131722;
+        --muted: #5f6675;
+        --soft: #eef1f5;
+        --line: #d9dee8;
+        --blue: #2457a6;
+        --red: #b42318;
+        --green: #2f6f55;
+        --purple: #6b55a3;
+        --shadow: 0 18px 45px rgba(21, 31, 52, 0.08);
       }
 
       * {
@@ -35,16 +34,16 @@
 
       body {
         margin: 0;
-        background: var(--paper);
+        background: var(--bg);
         color: var(--ink);
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
           "Segoe UI", sans-serif;
-        line-height: 1.6;
+        line-height: 1.62;
       }
 
       a {
-        color: inherit;
+        color: var(--blue);
       }
 
       img {
@@ -52,125 +51,85 @@
         max-width: 100%;
       }
 
-      .skip-link {
-        position: absolute;
-        left: 1rem;
-        top: 1rem;
-        z-index: 10;
-        padding: 0.65rem 0.9rem;
-        background: var(--ink);
-        color: var(--paper-strong);
-        transform: translateY(-140%);
-        transition: transform 180ms ease;
+      .notice {
+        border-bottom: 1px solid var(--line);
+        background: #202635;
+        color: #eef3ff;
+        font-size: 0.9rem;
       }
 
-      .skip-link:focus {
-        transform: translateY(0);
+      .notice-inner,
+      .nav-inner,
+      .hero,
+      .section,
+      .footer-inner {
+        width: min(1060px, calc(100% - 36px));
+        margin: 0 auto;
       }
 
-      .site-nav {
-        position: absolute;
+      .notice-inner {
+        padding: 0.45rem 0;
+      }
+
+      .top-nav {
+        position: sticky;
         top: 0;
-        left: 0;
-        right: 0;
-        z-index: 3;
+        z-index: 5;
+        border-bottom: 1px solid rgba(217, 222, 232, 0.92);
+        background: rgba(248, 249, 251, 0.92);
+        backdrop-filter: blur(14px);
+      }
+
+      .nav-inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        width: min(1180px, calc(100% - 40px));
-        margin: 0 auto;
-        padding: 24px 0;
+        min-height: 58px;
       }
 
       .brand {
-        font-weight: 800;
-        letter-spacing: 0;
+        color: var(--ink);
+        font-size: 0.98rem;
+        font-weight: 780;
+        text-decoration: none;
       }
 
       .nav-links {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 0.55rem;
-        color: rgba(24, 26, 31, 0.74);
-        font-size: 0.94rem;
+        justify-content: flex-end;
+        gap: 0.35rem;
+        font-size: 0.92rem;
       }
 
       .nav-links a {
         border-radius: 999px;
-        padding: 0.48rem 0.72rem;
+        padding: 0.42rem 0.66rem;
+        color: #394154;
         text-decoration: none;
       }
 
       .nav-links a:hover,
       .nav-links a:focus-visible {
-        background: rgba(255, 253, 247, 0.72);
+        background: var(--soft);
+        color: var(--ink);
         outline: none;
       }
 
       .hero {
-        position: relative;
-        display: grid;
-        min-height: 76vh;
-        isolation: isolate;
-        overflow: hidden;
+        padding: 72px 0 46px;
+        text-align: center;
       }
 
-      .hero::before {
-        position: absolute;
-        inset: 0;
-        z-index: -2;
-        content: "";
-        background:
-          linear-gradient(
-            90deg,
-            rgba(247, 244, 236, 0.97) 0%,
-            rgba(247, 244, 236, 0.9) 36%,
-            rgba(247, 244, 236, 0.58) 68%,
-            rgba(247, 244, 236, 0.34) 100%
-          ),
-          url("assets/header_plot.png") center bottom / cover no-repeat;
-      }
-
-      .hero::after {
-        position: absolute;
-        inset: auto 0 0;
-        z-index: -1;
-        height: 38%;
-        content: "";
-        background: linear-gradient(0deg, var(--paper) 0%, rgba(247, 244, 236, 0) 100%);
-      }
-
-      .hero-inner {
-        display: grid;
-        align-content: end;
-        gap: 2rem;
-        width: min(1180px, calc(100% - 40px));
-        margin: 0 auto;
-        padding: 112px 0 72px;
-      }
-
-      .hero-copy {
-        max-width: 760px;
-      }
-
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.55rem;
-        margin: 0 0 1rem;
-        color: var(--green-dark);
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.11em;
+      .venue {
+        margin: 0 0 0.9rem;
+        color: var(--red);
+        font-size: 0.82rem;
+        font-weight: 820;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
-      }
-
-      .eyebrow::before {
-        width: 42px;
-        height: 2px;
-        background: var(--coral);
-        content: "";
       }
 
       h1,
@@ -181,313 +140,271 @@
       }
 
       h1 {
-        max-width: 680px;
-        margin-bottom: 1rem;
-        font-size: clamp(3.5rem, 12vw, 8.75rem);
-        line-height: 0.86;
+        max-width: 980px;
+        margin: 0 auto 1.15rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2.45rem, 6.5vw, 5.35rem);
+        font-weight: 680;
         letter-spacing: 0;
+        line-height: 0.98;
       }
 
-      .hero-subtitle {
-        max-width: 780px;
-        margin-bottom: 1.15rem;
-        font-size: clamp(1.25rem, 2.5vw, 2rem);
-        line-height: 1.16;
-        font-weight: 760;
+      .subtitle {
+        max-width: 830px;
+        margin: 0 auto 1.25rem;
+        color: #344050;
+        font-size: clamp(1.05rem, 2vw, 1.34rem);
       }
 
-      .hero-lede {
-        max-width: 720px;
-        margin-bottom: 1.7rem;
-        color: #373b3b;
-        font-size: 1.08rem;
-      }
-
-      .actions {
+      .authors {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.8rem;
+        justify-content: center;
+        gap: 0.25rem 0.8rem;
+        max-width: 880px;
+        margin: 0 auto 1.35rem;
+        color: #3b4251;
+        font-size: 1rem;
       }
 
-      .button {
+      .authors span {
+        white-space: nowrap;
+      }
+
+      .link-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.68rem;
+      }
+
+      .pill {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: 44px;
-        border: 1px solid var(--ink);
-        border-radius: 8px;
-        padding: 0.74rem 1rem;
-        font-weight: 760;
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.58rem 0.92rem;
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 740;
         text-decoration: none;
-        transition:
-          transform 180ms ease,
-          box-shadow 180ms ease,
-          background 180ms ease;
+        box-shadow: 0 8px 22px rgba(21, 31, 52, 0.05);
       }
 
-      .button:hover,
-      .button:focus-visible {
-        box-shadow: 0 10px 24px rgba(24, 26, 31, 0.14);
+      .pill:hover,
+      .pill:focus-visible {
+        border-color: #b9c3d3;
+        box-shadow: 0 10px 26px rgba(21, 31, 52, 0.1);
         outline: none;
         transform: translateY(-1px);
       }
 
-      .button.primary {
-        background: var(--ink);
-        color: var(--paper-strong);
-      }
-
-      .button.secondary {
-        background: rgba(255, 253, 247, 0.72);
-      }
-
-      .hero-metrics {
+      main {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 1px;
-        max-width: 900px;
-        border: 1px solid rgba(24, 26, 31, 0.16);
-        background: rgba(24, 26, 31, 0.16);
+        gap: 44px;
+        padding-bottom: 64px;
+      }
+
+      .section {
+        scroll-margin-top: 84px;
+      }
+
+      .paper-block {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--paper);
         box-shadow: var(--shadow);
       }
 
-      .metric {
-        min-width: 0;
-        padding: 1rem;
-        background: rgba(255, 253, 247, 0.86);
+      .intro-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 28px;
+        padding: 30px;
       }
 
-      .metric strong {
+      .intro-text {
+        max-width: 720px;
+        font-size: 1.05rem;
+      }
+
+      .intro-text p:last-child,
+      .side-facts p:last-child {
+        margin-bottom: 0;
+      }
+
+      .side-facts {
+        border-left: 1px solid var(--line);
+        padding-left: 24px;
+      }
+
+      .fact {
+        margin-bottom: 1rem;
+      }
+
+      .fact strong {
         display: block;
-        margin-bottom: 0.16rem;
-        color: var(--green-dark);
-        font-size: clamp(1.55rem, 4vw, 2.55rem);
-        line-height: 1;
+        color: var(--red);
+        font-size: 1.45rem;
+        line-height: 1.05;
       }
 
-      .metric span {
+      .fact span {
         color: var(--muted);
         font-size: 0.92rem;
       }
 
-      main {
+      h2 {
+        margin-bottom: 1rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.9rem, 3.6vw, 3rem);
+        font-weight: 680;
+        letter-spacing: 0;
+        line-height: 1.05;
+      }
+
+      .section-lede {
+        max-width: 760px;
+        margin-bottom: 1.35rem;
+        color: var(--muted);
+        font-size: 1.04rem;
+      }
+
+      .figure-shell {
         overflow: hidden;
       }
 
-      .section {
-        padding: 78px 0;
+      .figure-pad {
+        padding: 18px;
+        background:
+          linear-gradient(135deg, rgba(36, 87, 166, 0.09), rgba(180, 35, 24, 0.05)),
+          var(--paper);
       }
 
-      .section.tight {
-        padding-top: 42px;
+      .figure-pad img {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
       }
 
-      .container {
-        width: min(1180px, calc(100% - 40px));
-        margin: 0 auto;
-      }
-
-      .section-heading {
-        display: grid;
-        grid-template-columns: minmax(0, 0.82fr) minmax(280px, 0.58fr);
-        gap: 2rem;
-        align-items: end;
-        margin-bottom: 2rem;
-      }
-
-      .section-heading h2 {
-        margin-bottom: 0;
-        font-size: clamp(2rem, 5vw, 4.4rem);
-        line-height: 0.98;
-        letter-spacing: 0;
-      }
-
-      .section-heading p {
-        margin-bottom: 0.15rem;
+      figcaption {
+        border-top: 1px solid var(--line);
+        padding: 0.9rem 1rem 1rem;
         color: var(--muted);
+        font-size: 0.93rem;
       }
 
-      .feature-grid {
+      .caption-link {
+        font-weight: 720;
+        text-decoration: none;
+      }
+
+      .caption-link:hover,
+      .caption-link:focus-visible {
+        text-decoration: underline;
+        outline: none;
+      }
+
+      .approach-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1rem;
       }
 
-      .feature {
-        min-height: 240px;
+      .approach-card {
         border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 1.2rem;
-        background: var(--paper-strong);
+        border-radius: 10px;
+        padding: 1.15rem;
+        background: var(--paper);
       }
 
-      .feature .kicker {
+      .label {
         display: inline-flex;
-        margin-bottom: 1.1rem;
-        color: var(--coral);
-        font-size: 0.8rem;
+        margin-bottom: 0.9rem;
+        color: var(--red);
+        font-size: 0.78rem;
         font-weight: 820;
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
 
-      .feature h3 {
-        margin-bottom: 0.7rem;
-        font-size: 1.32rem;
-        line-height: 1.2;
+      .approach-card h3 {
+        margin-bottom: 0.45rem;
+        font-size: 1.13rem;
+        line-height: 1.25;
       }
 
-      .feature p {
+      .approach-card p {
         margin-bottom: 0;
         color: var(--muted);
       }
 
-      .results-band {
-        background: #19201d;
-        color: var(--paper-strong);
-      }
-
-      .results-band .section-heading p,
-      .results-band .caption {
-        color: rgba(255, 253, 247, 0.72);
-      }
-
-      .results-layout {
+      .results-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.62fr);
-        gap: 1.1rem;
-        align-items: stretch;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 1.15rem;
+        align-items: start;
       }
 
-      .plot-panel,
-      .table-panel {
-        border: 1px solid rgba(255, 253, 247, 0.18);
-        border-radius: 8px;
-        background: rgba(255, 253, 247, 0.06);
-      }
-
-      .plot-panel {
-        display: grid;
-        align-content: center;
-        min-height: 320px;
-        overflow: hidden;
-      }
-
-      .plot-panel img {
-        width: 100%;
-        background: #fff;
-      }
-
-      .caption {
-        margin: 0;
-        padding: 0.9rem 1rem 1rem;
-        font-size: 0.92rem;
-      }
-
-      .table-panel {
-        overflow: auto;
+      .table-wrap {
+        overflow-x: auto;
       }
 
       table {
         width: 100%;
+        min-width: 620px;
         border-collapse: collapse;
-        min-width: 520px;
+        background: var(--paper);
       }
 
       th,
       td {
-        border-bottom: 1px solid rgba(255, 253, 247, 0.16);
-        padding: 0.95rem 1rem;
+        border-bottom: 1px solid var(--line);
+        padding: 0.8rem 0.9rem;
         text-align: left;
-        vertical-align: middle;
+        vertical-align: top;
       }
 
       th {
-        color: rgba(255, 253, 247, 0.68);
+        color: #596274;
         font-size: 0.76rem;
-        font-weight: 760;
+        font-weight: 800;
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
 
       td {
+        font-size: 0.96rem;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .score {
+        color: var(--green);
+        font-weight: 820;
+      }
+
+      .side-note {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 1rem;
+        background: #f3f6fb;
+        color: #445065;
         font-size: 0.95rem;
       }
 
-      td strong {
-        color: #fff3b8;
+      .side-note h3 {
+        margin-bottom: 0.45rem;
+        color: var(--ink);
+        font-size: 1rem;
       }
 
-      .log-link {
-        color: #ffd36d;
-        font-weight: 760;
-        text-decoration: none;
-      }
-
-      .log-link:hover,
-      .log-link:focus-visible {
-        text-decoration: underline;
-        outline: none;
-      }
-
-      .method {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);
-        gap: 2.5rem;
-        align-items: start;
-      }
-
-      .method .section-heading {
-        grid-template-columns: 1fr;
-      }
-
-      .steps {
-        display: grid;
-        gap: 1rem;
-      }
-
-      .step {
-        display: grid;
-        grid-template-columns: 72px minmax(0, 1fr);
-        gap: 1rem;
-        border-top: 1px solid var(--line);
-        padding-top: 1rem;
-      }
-
-      .step-number {
-        color: var(--plum);
-        font-size: 1.7rem;
-        font-weight: 860;
-        line-height: 1;
-      }
-
-      .step h3 {
-        margin-bottom: 0.35rem;
-        font-size: 1.15rem;
-      }
-
-      .step p {
-        margin-bottom: 0;
-        color: var(--muted);
-      }
-
-      .callout {
-        border-left: 6px solid var(--green);
-        padding: 1.25rem 1.35rem;
-        background: var(--paper-strong);
-        box-shadow: var(--shadow);
-      }
-
-      .callout h3 {
-        margin-bottom: 0.65rem;
-        font-size: 1.35rem;
-      }
-
-      .callout p {
-        color: var(--muted);
-      }
-
-      .callout p:last-child {
+      .side-note p:last-child {
         margin-bottom: 0;
       }
 
@@ -498,26 +415,26 @@
       }
 
       .command-block {
-        border: 1px solid var(--line);
-        border-radius: 8px;
         overflow: hidden;
-        background: var(--paper-strong);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--paper);
       }
 
       .command-block h3 {
         margin: 0;
         border-bottom: 1px solid var(--line);
-        padding: 0.9rem 1rem;
-        font-size: 1rem;
+        padding: 0.78rem 0.95rem;
+        font-size: 0.98rem;
       }
 
       pre {
         margin: 0;
-        overflow: auto;
-        padding: 1rem;
-        background: var(--code);
-        color: #f3efe6;
-        font-size: 0.88rem;
+        overflow-x: auto;
+        padding: 0.95rem;
+        background: #171b24;
+        color: #eef3ff;
+        font-size: 0.86rem;
         line-height: 1.55;
       }
 
@@ -526,362 +443,291 @@
           "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       }
 
-      .note {
-        margin-top: 1rem;
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      .citation {
-        display: grid;
-        grid-template-columns: minmax(0, 0.6fr) minmax(320px, 1fr);
-        gap: 1.4rem;
-        align-items: start;
-      }
-
-      .citation-copy {
-        color: var(--muted);
+      .bibtex {
+        border-radius: 10px;
       }
 
       .footer {
         border-top: 1px solid var(--line);
-        padding: 30px 0 48px;
+        padding: 26px 0 38px;
+        background: var(--paper);
         color: var(--muted);
-        font-size: 0.94rem;
+        font-size: 0.92rem;
       }
 
-      @media (max-width: 900px) {
-        .site-nav {
-          position: relative;
-          flex-direction: column;
+      .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 0.85rem;
+      }
+
+      @media (max-width: 860px) {
+        .nav-inner {
           align-items: flex-start;
-          padding-bottom: 8px;
+          flex-direction: column;
+          padding: 0.75rem 0;
         }
 
         .nav-links {
-          flex-wrap: wrap;
+          justify-content: flex-start;
         }
 
         .hero {
-          min-height: auto;
+          padding-top: 46px;
         }
 
-        .hero-inner {
-          padding-top: 42px;
-        }
-
-        .hero-metrics,
-        .feature-grid,
-        .results-layout,
-        .method,
-        .setup-grid,
-        .citation,
-        .section-heading {
+        .intro-grid,
+        .results-grid,
+        .setup-grid {
           grid-template-columns: 1fr;
         }
 
-        .hero-metrics {
-          max-width: 540px;
+        .side-facts {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 1rem;
+          border-left: 0;
+          border-top: 1px solid var(--line);
+          padding-left: 0;
+          padding-top: 20px;
         }
 
-        .section {
-          padding: 58px 0;
+        .approach-grid {
+          grid-template-columns: 1fr;
         }
       }
 
-      @media (max-width: 620px) {
-        .site-nav,
-        .container,
-        .hero-inner {
-          width: min(100% - 28px, 1180px);
+      @media (max-width: 560px) {
+        .notice-inner,
+        .nav-inner,
+        .hero,
+        .section,
+        .footer-inner {
+          width: min(100% - 28px, 1060px);
         }
 
         h1 {
-          font-size: clamp(3.3rem, 22vw, 5.4rem);
+          font-size: clamp(2.25rem, 14vw, 3.8rem);
         }
 
-        .hero-subtitle {
-          font-size: 1.18rem;
+        .hero {
+          text-align: left;
         }
 
-        .hero-metrics {
+        .authors,
+        .link-row {
+          justify-content: flex-start;
+        }
+
+        .authors span {
+          white-space: normal;
+        }
+
+        .intro-grid {
+          padding: 20px;
+        }
+
+        .side-facts {
           grid-template-columns: 1fr;
         }
 
-        .actions {
-          display: grid;
-        }
-
-        .button {
+        .pill {
           width: 100%;
         }
 
-        .feature {
-          min-height: auto;
-        }
-
-        .step {
-          grid-template-columns: 48px minmax(0, 1fr);
-        }
-
         table {
-          min-width: 470px;
+          min-width: 560px;
         }
       }
     </style>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="notice">
+      <div class="notice-inner">
+        HiPER project page. Results, code links, and setup commands are collected here for quick review.
+      </div>
+    </div>
 
-    <nav class="site-nav" aria-label="Primary navigation">
-      <a class="brand" href="#top" aria-label="HiPER home">HiPER</a>
-      <div class="nav-links">
-        <a href="#results">Results</a>
-        <a href="#method">Method</a>
-        <a href="#setup">Setup</a>
-        <a href="#citation">Citation</a>
+    <nav class="top-nav" aria-label="Primary navigation">
+      <div class="nav-inner">
+        <a class="brand" href="#top">HiPER</a>
+        <div class="nav-links">
+          <a href="#overview">Overview</a>
+          <a href="#approach">Approach</a>
+          <a href="#results">Results</a>
+          <a href="#setup">Setup</a>
+          <a href="#citation">BibTeX</a>
+        </div>
       </div>
     </nav>
 
     <header class="hero" id="top">
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">LLM agent training</p>
-          <h1>HiPER</h1>
-          <p class="hero-subtitle">
-            Hierarchical Reinforcement Learning with Explicit Credit Assignment
-            for Large Language Model Agents
-          </p>
-          <p class="hero-lede">
-            HiPER trains long-horizon agents by separating high-level planning
-            from low-level execution, then assigning credit across both time
-            scales through Hierarchical Advantage Estimation.
-          </p>
-          <div class="actions" aria-label="Project links">
-            <a class="button primary" href="https://arxiv.org/abs/2602.16165">Read the paper</a>
-            <a
-              class="button secondary"
-              href="https://jonp07.notion.site/HiPER-Hierarchical-Plan-Execute-Reinforcement-Learning-for-Multi-turn-LLM-Agents-314911747a7e801b86e7eee6187d7cd5?source=copy_link"
-            >Project blog</a>
-            <a class="button secondary" href="https://github.com/JonP07/HiPER-agent">View code</a>
-          </div>
-        </div>
-
-        <div class="hero-metrics" aria-label="Headline results">
-          <div class="metric">
-            <strong>97.4%</strong>
-            <span>ALFWorld success with Qwen2.5-7B-Instruct</span>
-          </div>
-          <div class="metric">
-            <strong>83.3%</strong>
-            <span>WebShop success with Qwen2.5-7B-Instruct</span>
-          </div>
-          <div class="metric">
-            <strong>2x</strong>
-            <span>planning and execution time scales for credit assignment</span>
-          </div>
-        </div>
+      <p class="venue">Long-horizon LLM agent training</p>
+      <h1>HiPER: Hierarchical Reinforcement Learning with Explicit Credit Assignment for Large Language Model Agents</h1>
+      <p class="subtitle">
+        HiPER separates high-level planning from low-level execution and trains both levels with Hierarchical Advantage Estimation.
+      </p>
+      <div class="authors" aria-label="Authors">
+        <span>Jiangweizhi Peng</span>
+        <span>Yuanxin Liu</span>
+        <span>Ruida Zhou</span>
+        <span>Charles Fleming</span>
+        <span>Zhaoran Wang</span>
+        <span>Alfredo Garcia</span>
+        <span>Mingyi Hong</span>
+      </div>
+      <div class="link-row" aria-label="Project links">
+        <a class="pill" href="https://arxiv.org/abs/2602.16165">Paper</a>
+        <a class="pill" href="https://github.com/JonP07/HiPER-agent">Code</a>
+        <a class="pill" href="https://jonp07.notion.site/HiPER-Hierarchical-Plan-Execute-Reinforcement-Learning-for-Multi-turn-LLM-Agents-314911747a7e801b86e7eee6187d7cd5?source=copy_link">Blog</a>
       </div>
     </header>
 
-    <main id="main">
-      <section class="section tight" aria-labelledby="overview-title">
-        <div class="container">
-          <div class="section-heading">
-            <h2 id="overview-title">Built for long-horizon agents.</h2>
+    <main>
+      <section class="section" id="overview" aria-labelledby="overview-title">
+        <div class="paper-block intro-grid">
+          <div class="intro-text">
+            <h2 id="overview-title">Overview</h2>
             <p>
-              Flat action-level optimization makes it difficult to tell whether
-              an agent failed because the plan was poor, the execution was poor,
-              or credit was assigned at the wrong temporal scale.
+              Multi-turn agents often fail for reasons that are hard to diagnose with a flat action sequence. A bad final reward can reflect a poor plan, weak execution, or a credit assignment signal that arrives too late to train the right decision.
+            </p>
+            <p>
+              HiPER makes the hierarchy explicit. It represents agent behavior as plans and executions, extends the verl-agent training stack, and uses Hierarchical Advantage Estimation to assign credit across both temporal scales.
             </p>
           </div>
-
-          <div class="feature-grid">
-            <article class="feature">
-              <span class="kicker">Architecture</span>
-              <h3>Plan-execute hierarchy</h3>
-              <p>
-                Agent behavior is organized into high-level plans and
-                lower-level environment actions, matching how multi-turn tasks
-                naturally unfold.
-              </p>
-            </article>
-
-            <article class="feature">
-              <span class="kicker">Algorithm</span>
-              <h3>Hierarchical Advantage Estimation</h3>
-              <p>
-                HAE estimates advantages across planning and execution levels,
-                improving feedback quality for sparse and delayed rewards.
-              </p>
-            </article>
-
-            <article class="feature">
-              <span class="kicker">System</span>
-              <h3>veRL-agent extensions</h3>
-              <p>
-                The codebase builds on verl-agent and veRL with additions to the
-                agent interface, rollout handling, and training objective.
-              </p>
-            </article>
-          </div>
+          <aside class="side-facts" aria-label="Headline results">
+            <p class="fact">
+              <strong>97.4%</strong>
+              <span>ALFWorld success with Qwen2.5-7B-Instruct</span>
+            </p>
+            <p class="fact">
+              <strong>83.3%</strong>
+              <span>WebShop success with Qwen2.5-7B-Instruct</span>
+            </p>
+            <p class="fact">
+              <strong>2 levels</strong>
+              <span>Planning and execution credit assignment</span>
+            </p>
+          </aside>
         </div>
       </section>
 
-      <section class="section results-band" id="results" aria-labelledby="results-title">
-        <div class="container">
-          <div class="section-heading">
-            <h2 id="results-title">Results summary.</h2>
+      <section class="section" aria-labelledby="figure-title">
+        <h2 id="figure-title">Training and evaluation snapshot</h2>
+        <p class="section-lede">
+          The figure summarizes HiPER performance across ALFWorld and WebShop experiments. It is bundled inside the GitHub Pages source directory so the deployed page can load it directly.
+        </p>
+        <figure class="paper-block figure-shell">
+          <div class="figure-pad">
+            <img
+              src="./assets/header_plot.png"
+              alt="HiPER result plots comparing ALFWorld and WebShop training and evaluation performance."
+            >
+          </div>
+          <figcaption>
+            Summary plot for the HiPER experiments. <a class="caption-link" href="./assets/header_plot.png">Open the full-size figure.</a>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section" id="approach" aria-labelledby="approach-title">
+        <h2 id="approach-title">Approach</h2>
+        <p class="section-lede">
+          HiPER keeps the agent interface and optimization target aligned: the model plans, executes, observes, and receives credit at the level where each decision was made.
+        </p>
+        <div class="approach-grid">
+          <article class="approach-card">
+            <span class="label">Step 1</span>
+            <h3>Plan at a higher level</h3>
             <p>
-              HiPER is evaluated on long-horizon interactive environments where
-              agents must reason, act, observe, and recover across many turns.
+              The policy forms abstract intent for a task segment instead of treating the full trajectory as one undifferentiated action stream.
             </p>
-          </div>
-
-          <div class="results-layout">
-            <figure class="plot-panel">
-              <img
-                src="assets/header_plot.png"
-                alt="HiPER result plots comparing performance across ALFWorld and WebShop experiments."
-              >
-              <figcaption class="caption">
-                Training curves and headline comparisons from the HiPER experiments.
-              </figcaption>
-            </figure>
-
-            <div class="table-panel">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Algorithm</th>
-                    <th>Task</th>
-                    <th>Model</th>
-                    <th>Success</th>
-                    <th>Log</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><strong>HiPER</strong></td>
-                    <td>ALFWorld</td>
-                    <td>Qwen2.5-1.5B-Instruct</td>
-                    <td>95.3%</td>
-                    <td>
-                      <a class="log-link" href="https://api.wandb.ai/links/mhong-university-of-minnesota/6sbbne68">W&amp;B</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>HiPER</strong></td>
-                    <td>ALFWorld</td>
-                    <td>Qwen2.5-7B-Instruct</td>
-                    <td>97.4%</td>
-                    <td>
-                      <a class="log-link" href="https://api.wandb.ai/links/mhong-university-of-minnesota/6sbbne68">W&amp;B</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>HiPER</strong></td>
-                    <td>WebShop</td>
-                    <td>Qwen2.5-1.5B-Instruct</td>
-                    <td>71.4%</td>
-                    <td>
-                      <a class="log-link" href="https://api.wandb.ai/links/mhong-university-of-minnesota/uwifhx6v">W&amp;B</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><strong>HiPER</strong></td>
-                    <td>WebShop</td>
-                    <td>Qwen2.5-7B-Instruct</td>
-                    <td>83.3%</td>
-                    <td>
-                      <a class="log-link" href="https://api.wandb.ai/links/mhong-university-of-minnesota/uwifhx6v">W&amp;B</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </article>
+          <article class="approach-card">
+            <span class="label">Step 2</span>
+            <h3>Execute in the environment</h3>
+            <p>
+              Lower-level actions interact with ALFWorld or WebShop, producing observations that expose where plans succeed or break down.
+            </p>
+          </article>
+          <article class="approach-card">
+            <span class="label">Step 3</span>
+            <h3>Estimate hierarchical advantages</h3>
+            <p>
+              HAE separates planning credit from execution credit, improving the training signal for sparse and delayed rewards.
+            </p>
+          </article>
         </div>
       </section>
 
-      <section class="section" id="method" aria-labelledby="method-title">
-        <div class="container method">
-          <div>
-            <div class="section-heading">
-              <h2 id="method-title">How HiPER works.</h2>
-              <p>
-                The training signal is structured around the same hierarchy used
-                by the agent at inference time.
-              </p>
-            </div>
-
-            <div class="steps">
-              <article class="step">
-                <span class="step-number">01</span>
-                <div>
-                  <h3>Plan at a higher level</h3>
-                  <p>
-                    The policy proposes abstract intent for a task segment
-                    instead of optimizing every action in a single flat stream.
-                  </p>
-                </div>
-              </article>
-
-              <article class="step">
-                <span class="step-number">02</span>
-                <div>
-                  <h3>Execute with environment feedback</h3>
-                  <p>
-                    Low-level actions interact with ALFWorld or WebShop, produce
-                    observations, and expose where a plan succeeds or fails.
-                  </p>
-                </div>
-              </article>
-
-              <article class="step">
-                <span class="step-number">03</span>
-                <div>
-                  <h3>Assign credit across levels</h3>
-                  <p>
-                    Hierarchical Advantage Estimation separates planning credit
-                    from execution credit so delayed outcomes can train the
-                    right behavior.
-                  </p>
-                </div>
-              </article>
-            </div>
+      <section class="section" id="results" aria-labelledby="results-title">
+        <h2 id="results-title">Results</h2>
+        <p class="section-lede">
+          HiPER is evaluated on long-horizon interactive tasks where agents must reason, act, observe, and recover over many turns.
+        </p>
+        <div class="results-grid">
+          <div class="paper-block table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Algorithm</th>
+                  <th>Task</th>
+                  <th>Model</th>
+                  <th>Success rate</th>
+                  <th>Training log</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>HiPER</strong></td>
+                  <td>ALFWorld</td>
+                  <td>Qwen2.5-1.5B-Instruct</td>
+                  <td class="score">95.3%</td>
+                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/6sbbne68">W&amp;B</a></td>
+                </tr>
+                <tr>
+                  <td><strong>HiPER</strong></td>
+                  <td>ALFWorld</td>
+                  <td>Qwen2.5-7B-Instruct</td>
+                  <td class="score">97.4%</td>
+                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/6sbbne68">W&amp;B</a></td>
+                </tr>
+                <tr>
+                  <td><strong>HiPER</strong></td>
+                  <td>WebShop</td>
+                  <td>Qwen2.5-1.5B-Instruct</td>
+                  <td class="score">71.4%</td>
+                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/uwifhx6v">W&amp;B</a></td>
+                </tr>
+                <tr>
+                  <td><strong>HiPER</strong></td>
+                  <td>WebShop</td>
+                  <td>Qwen2.5-7B-Instruct</td>
+                  <td class="score">83.3%</td>
+                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/uwifhx6v">W&amp;B</a></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-
-          <aside class="callout">
-            <h3>Why hierarchy matters</h3>
+          <aside class="side-note">
+            <h3>What to read from the table</h3>
             <p>
-              Long-horizon agent tasks rarely fail at a single action. HiPER
-              gives the optimizer a better decomposition: what the agent should
-              be trying to do, and how well it carried that intent through the
-              environment.
-            </p>
-            <p>
-              This repository keeps that decomposition visible in both rollout
-              collection and reinforcement learning updates.
+              The larger model improves both environments, but the framework also gives strong results with Qwen2.5-1.5B-Instruct. The W&amp;B links point to the corresponding training runs.
             </p>
           </aside>
         </div>
       </section>
 
       <section class="section" id="setup" aria-labelledby="setup-title">
-        <div class="container">
-          <div class="section-heading">
-            <h2 id="setup-title">Install and run.</h2>
-            <p>
-              ALFWorld and WebShop have different environment constraints. For
-              WebShop, use a separate Python 3.10 environment.
-            </p>
-          </div>
-
-          <div class="setup-grid">
-            <div class="command-block">
-              <h3>veRL and HiPER</h3>
-              <pre><code>conda create -n verl python==3.12 -y
+        <h2 id="setup-title">Setup</h2>
+        <p class="section-lede">
+          ALFWorld and WebShop have different environment constraints. Use a separate Python 3.10 environment for WebShop.
+        </p>
+        <div class="setup-grid">
+          <div class="command-block">
+            <h3>veRL and HiPER</h3>
+            <pre><code>conda create -n verl python==3.12 -y
 conda activate verl
 
 pip3 install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
@@ -889,64 +735,45 @@ pip3 install flash-attn==2.7.4.post1 --no-build-isolation
 pip3 install -e .
 pip3 install vllm==0.8.5
 pip3 install peft==0.17.1</code></pre>
-            </div>
-
-            <div class="command-block">
-              <h3>ALFWorld</h3>
-              <pre><code>pip3 install gymnasium==0.29.1
+          </div>
+          <div class="command-block">
+            <h3>ALFWorld</h3>
+            <pre><code>pip3 install gymnasium==0.29.1
 pip3 install stable-baselines3==2.6.0
 pip install alfworld
 alfworld-download -f</code></pre>
-            </div>
-
-            <div class="command-block">
-              <h3>WebShop environment</h3>
-              <pre><code>conda create -n verl-webshop python==3.10 -y
+          </div>
+          <div class="command-block">
+            <h3>WebShop</h3>
+            <pre><code>conda create -n verl-webshop python==3.10 -y
 conda activate verl-webshop
 
 cd ./agent_system/environments/env_package/webshop/webshop
 ./setup.sh -d all</code></pre>
-            </div>
-
-            <div class="command-block">
-              <h3>Run examples</h3>
-              <pre><code>bash example_scripts/HiPER_trainer/run_alfworld.sh
-bash example_scripts/HiPER_trainer/run_webshop.sh</code></pre>
-            </div>
           </div>
-
-          <p class="note">
-            For WebShop, install the project dependencies from the repository
-            root after setting up the WebShop environment. The typer warnings
-            emitted by spacy and weasel can be ignored.
-          </p>
+          <div class="command-block">
+            <h3>Run examples</h3>
+            <pre><code>bash example_scripts/HiPER_trainer/run_alfworld.sh
+bash example_scripts/HiPER_trainer/run_webshop.sh</code></pre>
+          </div>
         </div>
       </section>
 
       <section class="section" id="citation" aria-labelledby="citation-title">
-        <div class="container citation">
-          <div>
-            <h2 id="citation-title">Citation.</h2>
-            <p class="citation-copy">
-              If HiPER is useful for your research, cite the paper below.
-            </p>
-          </div>
-          <pre><code>@article{peng2026hiper,
+        <h2 id="citation-title">BibTeX</h2>
+        <pre class="bibtex"><code>@article{peng2026hiper,
   title={HiPER: Hierarchical Reinforcement Learning with Explicit Credit Assignment for Large Language Model Agents},
   author={Peng, Jiangweizhi and Liu, Yuanxin and Zhou, Ruida and Fleming, Charles and Wang, Zhaoran and Garcia, Alfredo and Hong, Mingyi},
   journal={arXiv preprint arXiv:2602.16165},
   year={2026}
 }</code></pre>
-        </div>
       </section>
     </main>
 
     <footer class="footer">
-      <div class="container">
-        Built on <a href="https://github.com/langfengQ/verl-agent">verl-agent</a>
-        and <a href="https://github.com/volcengine/verl">veRL</a>, with
-        environments adapted from <a href="https://github.com/alfworld/alfworld">ALFWorld</a>
-        and <a href="https://github.com/princeton-nlp/WebShop">WebShop</a>.
+      <div class="footer-inner">
+        <span>Built on <a href="https://github.com/langfengQ/verl-agent">verl-agent</a> and <a href="https://github.com/volcengine/verl">veRL</a>.</span>
+        <span>Page style inspired by compact academic project pages such as <a href="https://yoonholee.com/meta-harness/">Meta-Harness</a>.</span>
       </div>
     </footer>
   </body>
