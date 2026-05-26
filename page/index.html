@@ -256,9 +256,7 @@
 
       .approach-panel {
         display: grid;
-        grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
-        gap: 1.4rem;
-        align-items: stretch;
+        gap: 1.1rem;
         padding: 22px;
       }
 
@@ -266,6 +264,10 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 1rem;
+        background: #fbfcfe;
       }
 
       .approach-copy p {
@@ -326,24 +328,9 @@
         background: #fff;
       }
 
-      .approach-pdf {
+      .approach-png {
         width: 100%;
-        min-height: 520px;
-        border: 0;
         background: #fff;
-      }
-
-      .figure-caption {
-        border-top: 1px solid var(--line);
-        padding: 0.72rem 0.9rem;
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .figure-caption a {
-        font-weight: 740;
-        text-decoration-thickness: 0.08em;
-        text-underline-offset: 0.16em;
       }
 
       .results-grid {
@@ -487,10 +474,6 @@
         .setup-grid {
           grid-template-columns: 1fr;
         }
-
-        .approach-pdf {
-          min-height: 460px;
-        }
       }
 
       @media (max-width: 560px) {
@@ -536,10 +519,6 @@
           min-height: auto;
           width: max-content;
           padding: 0.25rem 0.55rem;
-        }
-
-        .approach-pdf {
-          min-height: 360px;
         }
 
         .pill {
@@ -659,19 +638,11 @@
             </div>
           </div>
           <figure class="approach-figure">
-            <object
-              class="approach-pdf"
-              data="./assets/hiper.pdf"
-              type="application/pdf"
-              aria-label="HiPER hierarchical plan-execute reinforcement learning figure"
+            <img
+              class="approach-png"
+              src="./assets/hiper.png"
+              alt="HiPER hierarchical plan-execute reinforcement learning diagram"
             >
-              <p>
-                <a href="./assets/hiper.pdf">Open the HiPER approach figure.</a>
-              </p>
-            </object>
-            <figcaption class="figure-caption">
-              HiPER couples hierarchical action selection with credit assignment matched to the same temporal structure. <a href="./assets/hiper.pdf">Open PDF</a>
-            </figcaption>
           </figure>
         </div>
       </section>
