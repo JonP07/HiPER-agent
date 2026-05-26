@@ -962,7 +962,7 @@
       function normalizeSubgoal(subgoal) {
         return subgoal
           .toLowerCase()
-          .replace(/(a|an|the)/g, "")
+          .replace(/\b(a|an|the)\b/g, "")
           .replace(/[^a-z0-9]+/g, " ")
           .trim();
       }
