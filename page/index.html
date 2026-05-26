@@ -357,15 +357,78 @@
         font-size: 1.2rem;
       }
 
-      .trajectory-transcript {
+      .trajectory-groups {
         display: grid;
         gap: 0.9rem;
       }
 
-      .trajectory-turn {
+      .trajectory-group {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .trajectory-group-header {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-columns: auto minmax(0, 1fr) auto;
         gap: 0.75rem;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        padding: 0.75rem 0.9rem;
+        background: #fbfcfe;
+      }
+
+      .trajectory-range,
+      .trajectory-switches {
+        border-radius: 999px;
+        padding: 0.25rem 0.58rem;
+        font-size: 0.78rem;
+        font-weight: 820;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .trajectory-range {
+        background: rgba(36, 87, 166, 0.09);
+        color: var(--blue);
+      }
+
+      .trajectory-switches {
+        background: rgba(180, 35, 24, 0.08);
+        color: var(--red);
+      }
+
+      .trajectory-subgoal {
+        margin: 0;
+        font-size: 1rem;
+        font-family: inherit;
+        line-height: 1.32;
+      }
+
+      .trajectory-steps {
+        display: grid;
+        gap: 0.72rem;
+        padding: 0.85rem;
+      }
+
+      .trajectory-step-row {
+        display: grid;
+        grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.65rem;
+        align-items: stretch;
+      }
+
+      .trajectory-step-label {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        border-radius: 8px;
+        padding: 0.62rem 0.3rem;
+        background: #eef1f5;
+        color: #4c5566;
+        font-size: 0.82rem;
+        font-weight: 820;
       }
 
       .trajectory-block {
@@ -383,20 +446,22 @@
         border-color: rgba(180, 35, 24, 0.22);
       }
 
-      .trajectory-block h3 {
+      .trajectory-block h4 {
         margin: 0;
         border-bottom: 1px solid var(--line);
-        padding: 0.55rem 0.75rem;
+        padding: 0.42rem 0.62rem;
         background: #fbfcfe;
-        font-size: 0.9rem;
+        font-size: 0.78rem;
         font-family: inherit;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
       }
 
-      .trajectory-block.env h3 {
+      .trajectory-block.env h4 {
         color: var(--red);
       }
 
-      .trajectory-block.agent h3 {
+      .trajectory-block.agent h4 {
         color: var(--blue);
       }
 
@@ -404,13 +469,13 @@
         margin: 0;
         overflow-x: auto;
         white-space: pre-wrap;
-        padding: 0.75rem;
+        padding: 0.65rem;
         background: #fff;
         color: #2f3848;
         font-family:
           "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-        font-size: 0.82rem;
-        line-height: 1.5;
+        font-size: 0.79rem;
+        line-height: 1.46;
       }
 
       .trajectory-note {
@@ -420,7 +485,9 @@
       }
 
       .bibtex {
+        border: 1px solid var(--line);
         border-radius: 10px;
+        box-shadow: var(--shadow);
       }
 
       .footer {
@@ -503,6 +570,16 @@
           min-height: auto;
           width: max-content;
           padding: 0.25rem 0.55rem;
+        }
+
+        .trajectory-group-header,
+        .trajectory-step-row {
+          grid-template-columns: 1fr;
+        }
+
+        .trajectory-step-label {
+          justify-content: flex-start;
+          padding: 0.45rem 0.6rem;
         }
 
         .pill {
@@ -614,7 +691,7 @@
       <section class="section" id="trajectories" aria-labelledby="trajectories-title">
         <h2 id="trajectories-title">Example Trajectories</h2>
         <p class="section-lede">
-          Appendix E of the paper illustrates how HiPER agents keep subgoals while they remain useful and switch when the task phase changes. Select a case and step through the summarized Plan-Execute behavior.
+          Appendix E of the paper illustrates how HiPER agents keep subgoals while they remain useful and switch when the task phase changes. Select a case to view the original trajectory grouped by contiguous subgoal segments.
         </p>
         <div class="paper-block trajectory-shell">
           <div class="trajectory-tabs" role="tablist" aria-label="Trajectory examples">
@@ -624,7 +701,7 @@
           </div>
           <div class="trajectory-view" id="trajectory-view" aria-live="polite"></div>
           <p class="trajectory-note">
-            Original trajectory text is parsed from Appendix E of the <a href="https://arxiv.org/pdf/2602.16165">HiPER paper</a> and reformatted for this interactive view.
+            Original trajectory text is parsed from Appendix E of the <a href="https://arxiv.org/pdf/2602.16165">HiPER paper</a>; consecutive steps with the same active subgoal are grouped for readability.
           </p>
         </div>
       </section>
@@ -789,23 +866,80 @@
           .replace(/'/g, "&#039;");
       }
 
+      function getSubgoal(agentText) {
+        const match = String(agentText).match(/Subgoal:\s*([\s\S]*?)\s*Action:/);
+        return match ? match[1].replace(/\s+/g, " ").trim() : "Current subgoal";
+      }
+
+      function getSwitch(agentText) {
+        const match = String(agentText).match(/Switch:\s*(KEEP|SWITCH)/i);
+        return match ? match[1].toUpperCase() : "STEP";
+      }
+
+      function normalizeSubgoal(subgoal) {
+        return subgoal
+          .toLowerCase()
+          .replace(/(a|an|the)/g, "")
+          .replace(/[^a-z0-9]+/g, " ")
+          .trim();
+      }
+
+      function groupBySubgoal(steps) {
+        return steps.reduce((groups, item) => {
+          const subgoal = getSubgoal(item.agent || "");
+          const key = normalizeSubgoal(subgoal);
+          const previous = groups[groups.length - 1];
+          if (previous && previous.key === key) {
+            previous.steps.push(item);
+            previous.switches.push(getSwitch(item.agent || ""));
+          } else {
+            groups.push({
+              key,
+              subgoal,
+              steps: [item],
+              switches: [getSwitch(item.agent || "")]
+            });
+          }
+          return groups;
+        }, []);
+      }
+
+      function formatRange(steps) {
+        const first = steps[0].step;
+        const last = steps[steps.length - 1].step;
+        return first === last ? `Step ${first}` : `Steps ${first}-${last}`;
+      }
+
       function renderTrajectory() {
         const trajectory = trajectoryData[activeTrajectory];
-        const turns = trajectory.steps.map((item) => `
-          <div class="trajectory-turn">
-            <article class="trajectory-block env">
-              <h3>Environment - Step ${item.step}</h3>
-              <pre class="trajectory-text">${escapeHtml(item.environment || "")}</pre>
+        const groups = groupBySubgoal(trajectory.steps).map((group) => {
+          const rows = group.steps.map((item) => `
+            <div class="trajectory-step-row">
+              <div class="trajectory-step-label">Step ${item.step}</div>
+              <article class="trajectory-block env">
+                <h4>Environment</h4>
+                <pre class="trajectory-text">${escapeHtml(item.environment || "")}</pre>
+              </article>
+              <article class="trajectory-block agent">
+                <h4>Agent</h4>
+                <pre class="trajectory-text">${escapeHtml(item.agent || "")}</pre>
+              </article>
+            </div>
+          `).join("");
+          return `
+            <article class="trajectory-group">
+              <header class="trajectory-group-header">
+                <span class="trajectory-range">${formatRange(group.steps)}</span>
+                <h3 class="trajectory-subgoal">${escapeHtml(group.subgoal)}</h3>
+                <span class="trajectory-switches">${escapeHtml(group.switches.join(" -> "))}</span>
+              </header>
+              <div class="trajectory-steps">${rows}</div>
             </article>
-            <article class="trajectory-block agent">
-              <h3>Agent - Step ${item.step}</h3>
-              <pre class="trajectory-text">${escapeHtml(item.agent || "")}</pre>
-            </article>
-          </div>
-        `).join("");
+          `;
+        }).join("");
         view.innerHTML = `
           <h3 class="trajectory-title">${escapeHtml(trajectory.title)}</h3>
-          <div class="trajectory-transcript">${turns}</div>
+          <div class="trajectory-groups">${groups}</div>
         `;
       }
 
