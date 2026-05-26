@@ -235,6 +235,17 @@
         font-size: 1.04rem;
       }
 
+      .performance-figure {
+        margin: 0;
+      }
+
+      .performance-figure img {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
       .approach-panel {
         display: grid;
         gap: 1.1rem;
@@ -538,6 +549,7 @@
 
       .bibtex {
         border-radius: 0;
+        padding: 1.1rem 1.25rem 1.1rem 1.45rem;
       }
 
       .footer {
@@ -606,7 +618,8 @@
           padding: 20px;
         }
 
-        .approach-panel {
+
+      .approach-panel {
           padding: 18px;
         }
 
@@ -686,6 +699,20 @@
             </p>
           </div>
         </div>
+      </section>
+
+
+      <section class="section" id="performance" aria-labelledby="performance-title">
+        <h2 id="performance-title">Performance Summary</h2>
+        <p class="section-lede">
+          HiPER improves long-horizon agent training across ALFWorld and WebShop, with stronger final success rates and more stable training curves.
+        </p>
+        <figure class="performance-figure">
+          <img
+            src="./assets/header_plot.png"
+            alt="HiPER performance summary across ALFWorld and WebShop experiments"
+          >
+        </figure>
       </section>
 
       <section class="section" id="approach" aria-labelledby="approach-title">
