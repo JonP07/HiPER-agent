@@ -374,29 +374,37 @@
         grid-template-columns: auto minmax(0, 1fr) auto;
         gap: 0.75rem;
         align-items: center;
+        width: 100%;
+        border: 0;
         border-bottom: 1px solid var(--line);
         padding: 0.75rem 0.9rem;
         background: #fbfcfe;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .trajectory-group-header:hover,
+      .trajectory-group-header:focus-visible {
+        background: #eef4ff;
+        outline: none;
+      }
+
+      .trajectory-chevron {
+        color: var(--muted);
+        font-size: 1.1rem;
+        line-height: 1;
+      }
+
+      .trajectory-group:not(.is-open) .trajectory-steps {
+        display: none;
       }
 
       .trajectory-range,
-      .trajectory-switches {
-        border-radius: 999px;
-        padding: 0.25rem 0.58rem;
-        font-size: 0.78rem;
-        font-weight: 820;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-      }
-
       .trajectory-range {
         background: rgba(36, 87, 166, 0.09);
         color: var(--blue);
-      }
-
-      .trajectory-switches {
-        background: rgba(180, 35, 24, 0.08);
-        color: var(--red);
       }
 
       .trajectory-subgoal {
@@ -484,10 +492,52 @@
         font-size: 0.92rem;
       }
 
-      .bibtex {
+      .bibtex-card {
+        overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 10px;
+        background: var(--paper);
         box-shadow: var(--shadow);
+      }
+
+      .bibtex-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid var(--line);
+        padding: 0.78rem 0.95rem;
+        background: #fbfcfe;
+      }
+
+      .bibtex-header h3 {
+        margin: 0;
+        font-size: 0.98rem;
+        font-family: inherit;
+      }
+
+      .copy-button {
+        min-height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.38rem 0.72rem;
+        background: #fff;
+        color: var(--ink);
+        font: inherit;
+        font-size: 0.86rem;
+        font-weight: 760;
+        cursor: pointer;
+      }
+
+      .copy-button:hover,
+      .copy-button:focus-visible {
+        border-color: rgba(36, 87, 166, 0.35);
+        background: #eef4ff;
+        outline: none;
+      }
+
+      .bibtex {
+        border-radius: 0;
       }
 
       .footer {
@@ -708,12 +758,18 @@
 
       <section class="section" id="citation" aria-labelledby="citation-title">
         <h2 id="citation-title">BibTeX</h2>
-        <pre class="bibtex"><code>@article{peng2026hiper,
+        <div class="bibtex-card">
+          <div class="bibtex-header">
+            <h3>Citation</h3>
+            <button class="copy-button" type="button" data-copy-target="bibtex-code">Copy</button>
+          </div>
+          <pre class="bibtex"><code id="bibtex-code">@article{peng2026hiper,
   title={HiPER: Hierarchical Reinforcement Learning with Explicit Credit Assignment for Large Language Model Agents},
   author={Peng, Jiangweizhi and Liu, Yuanxin and Zhou, Ruida and Fleming, Charles and Wang, Zhaoran and Garcia, Alfredo and Hong, Mingyi},
   journal={arXiv preprint arXiv:2602.16165},
   year={2026}
 }</code></pre>
+        </div>
       </section>
     </main>
 
@@ -910,9 +966,10 @@
         return first === last ? `Step ${first}` : `Steps ${first}-${last}`;
       }
 
-      function renderTrajectory() {
+      function renderTrajectory(openGroup = 0) {
         const trajectory = trajectoryData[activeTrajectory];
-        const groups = groupBySubgoal(trajectory.steps).map((group) => {
+        const groups = groupBySubgoal(trajectory.steps).map((group, index) => {
+          const isOpen = index === openGroup;
           const rows = group.steps.map((item) => `
             <div class="trajectory-step-row">
               <div class="trajectory-step-label">Step ${item.step}</div>
@@ -927,12 +984,12 @@
             </div>
           `).join("");
           return `
-            <article class="trajectory-group">
-              <header class="trajectory-group-header">
+            <article class="trajectory-group ${isOpen ? "is-open" : ""}">
+              <button class="trajectory-group-header" type="button" data-group="${index}" aria-expanded="${String(isOpen)}">
                 <span class="trajectory-range">${formatRange(group.steps)}</span>
                 <h3 class="trajectory-subgoal">${escapeHtml(group.subgoal)}</h3>
-                <span class="trajectory-switches">${escapeHtml(group.switches.join(" -> "))}</span>
-              </header>
+                <span class="trajectory-chevron" aria-hidden="true">${isOpen ? "-" : "+"}</span>
+              </button>
               <div class="trajectory-steps">${rows}</div>
             </article>
           `;
@@ -941,6 +998,15 @@
           <h3 class="trajectory-title">${escapeHtml(trajectory.title)}</h3>
           <div class="trajectory-groups">${groups}</div>
         `;
+        view.querySelectorAll(".trajectory-group-header").forEach((button) => {
+          button.addEventListener("click", () => {
+            const group = button.closest(".trajectory-group");
+            const isOpen = group.classList.toggle("is-open");
+            button.setAttribute("aria-expanded", String(isOpen));
+            const chevron = button.querySelector(".trajectory-chevron");
+            if (chevron) chevron.textContent = isOpen ? "-" : "+";
+          });
+        });
       }
 
       tabs.forEach((button) => {
@@ -956,6 +1022,23 @@
       });
 
       renderTrajectory();
+
+      document.querySelectorAll("[data-copy-target]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const target = document.getElementById(button.dataset.copyTarget);
+          if (!target) return;
+          const original = button.textContent;
+          try {
+            await navigator.clipboard.writeText(target.textContent.trim());
+            button.textContent = "Copied";
+          } catch (error) {
+            button.textContent = "Select text";
+          }
+          window.setTimeout(() => {
+            button.textContent = original;
+          }, 1600);
+        });
+      });
     </script>
   </body>
 </html>
