@@ -549,7 +549,10 @@
 
       .bibtex {
         border-radius: 0;
-        padding: 1.1rem 1.25rem 1.1rem 1.45rem;
+        padding: 1rem 1.15rem 1rem 1.35rem;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: 0.78rem;
       }
 
       .footer {
@@ -777,9 +780,6 @@
             <button class="trajectory-tab" type="button" data-trajectory="shop" role="tab" aria-selected="false">WebShop: shirt search</button>
           </div>
           <div class="trajectory-view" id="trajectory-view" aria-live="polite"></div>
-          <p class="trajectory-note">
-            Original trajectory text is parsed from Appendix E of the <a href="https://arxiv.org/pdf/2602.16165">HiPER paper</a>; consecutive steps with the same active subgoal are grouped for readability.
-          </p>
         </div>
       </section>
 
@@ -810,7 +810,7 @@
     <script>
       const trajectoryData = {
         "cup": {
-                "title": "ALFWorld: cool cup",
+                "title": "ALFWorld: cool some cup and put it in cabinet.",
                 "steps": [
                         {
                                 "step": 1,
@@ -865,7 +865,7 @@
                 ]
         },
         "knife": {
-                "title": "ALFWorld: clean knife",
+                "title": "ALFWorld: put a clean knife in sidetable.",
                 "steps": [
                         {
                                 "step": 1,
@@ -905,7 +905,7 @@
                 ]
         },
         "shop": {
-                "title": "WebShop: shirt search",
+                "title": "WebShop: Find me machine wash men's dress shirts with cotton spandex, classic fit, short sleeve with color: bright aqua, and size: x-small, and price lower than 60.00 dollars.",
                 "steps": [
                         {
                                 "step": 1,
