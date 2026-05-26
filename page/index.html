@@ -235,25 +235,6 @@
         font-size: 1.04rem;
       }
 
-      .figure-shell {
-        margin: 0;
-        overflow: visible;
-      }
-
-      .figure-pad {
-        padding: 18px;
-        background:
-          linear-gradient(135deg, rgba(36, 87, 166, 0.09), rgba(180, 35, 24, 0.05)),
-          var(--paper);
-      }
-
-      .figure-pad img {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        background: #fff;
-      }
-
       .approach-panel {
         display: grid;
         gap: 1.1rem;
@@ -333,90 +314,145 @@
         background: #fff;
       }
 
-      .results-grid {
+      .trajectory-shell {
+        padding: 22px;
+      }
+
+      .trajectory-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-bottom: 1rem;
+      }
+
+      .trajectory-tab {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.48rem 0.8rem;
+        background: #fff;
+        color: #394154;
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 740;
+        cursor: pointer;
+      }
+
+      .trajectory-tab.is-active,
+      .trajectory-tab:hover,
+      .trajectory-tab:focus-visible {
+        border-color: rgba(180, 35, 24, 0.32);
+        background: rgba(180, 35, 24, 0.08);
+        color: var(--red);
+        outline: none;
+      }
+
+      .trajectory-view {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 300px;
-        gap: 1.15rem;
-        align-items: start;
+        grid-template-columns: minmax(220px, 0.46fr) minmax(0, 1fr);
+        gap: 1rem;
       }
 
-      .table-wrap {
-        overflow-x: auto;
+      .trajectory-list {
+        display: grid;
+        gap: 0.55rem;
       }
 
-      table {
-        width: 100%;
-        min-width: 620px;
-        border-collapse: collapse;
-        background: var(--paper);
-      }
-
-      th,
-      td {
-        border-bottom: 1px solid var(--line);
-        padding: 0.8rem 0.9rem;
+      .trajectory-step {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 0.72rem 0.8rem;
+        background: #fbfcfe;
+        color: #394154;
         text-align: left;
-        vertical-align: top;
+        font: inherit;
+        cursor: pointer;
       }
 
-      th {
-        color: #596274;
-        font-size: 0.76rem;
-        font-weight: 800;
+      .trajectory-step.is-active,
+      .trajectory-step:hover,
+      .trajectory-step:focus-visible {
+        border-color: rgba(36, 87, 166, 0.35);
+        background: #eef4ff;
+        outline: none;
+      }
+
+      .trajectory-step strong {
+        display: block;
+        color: var(--ink);
+        font-size: 0.95rem;
+      }
+
+      .trajectory-step span {
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      .trajectory-detail {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 1rem;
+        background: #fff;
+      }
+
+      .trajectory-detail h3 {
+        margin-bottom: 0.55rem;
+        font-size: 1.22rem;
+      }
+
+      .trajectory-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .trajectory-badge {
+        border-radius: 999px;
+        padding: 0.25rem 0.56rem;
+        background: rgba(36, 87, 166, 0.09);
+        color: var(--blue);
+        font-size: 0.78rem;
+        font-weight: 820;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .trajectory-badge.switch {
+        background: rgba(180, 35, 24, 0.08);
+        color: var(--red);
+      }
+
+      .trajectory-badge.keep {
+        background: rgba(47, 111, 85, 0.09);
+        color: var(--green);
+      }
+
+      .trajectory-field {
+        margin-bottom: 0.85rem;
+      }
+
+      .trajectory-field:last-child {
+        margin-bottom: 0;
+      }
+
+      .trajectory-field strong {
+        display: block;
+        margin-bottom: 0.15rem;
+        font-size: 0.78rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
 
-      td {
-        font-size: 0.96rem;
-      }
-
-      tbody tr:last-child td {
-        border-bottom: 0;
-      }
-
-      .score {
-        color: var(--green);
-        font-weight: 820;
-      }
-
-      .side-note {
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 1rem;
-        background: #f3f6fb;
-        color: #445065;
-        font-size: 0.95rem;
-      }
-
-      .side-note h3 {
-        margin-bottom: 0.45rem;
-        color: var(--ink);
-        font-size: 1rem;
-      }
-
-      .side-note p:last-child {
+      .trajectory-field p {
         margin-bottom: 0;
+        color: #3c4556;
       }
 
-      .setup-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 1rem;
-      }
-
-      .command-block {
-        overflow: hidden;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--paper);
-      }
-
-      .command-block h3 {
-        margin: 0;
-        border-bottom: 1px solid var(--line);
-        padding: 0.78rem 0.95rem;
-        font-size: 0.98rem;
+      .trajectory-note {
+        margin-top: 0.9rem;
+        color: var(--muted);
+        font-size: 0.92rem;
       }
 
       pre {
@@ -470,8 +506,7 @@
 
         .intro-grid,
         .approach-panel,
-        .results-grid,
-        .setup-grid {
+        .trajectory-view {
           grid-template-columns: 1fr;
         }
       }
@@ -524,10 +559,6 @@
         .pill {
           width: 100%;
         }
-
-        table {
-          min-width: 560px;
-        }
       }
     </style>
   </head>
@@ -538,8 +569,7 @@
         <div class="nav-links">
           <a href="#overview">Overview</a>
           <a href="#approach">Approach</a>
-          <a href="#results">Results</a>
-          <a href="#setup">Setup</a>
+          <a href="#trajectories">Trajectories</a>
           <a href="#citation">BibTeX</a>
         </div>
       </div>
@@ -580,21 +610,6 @@
             </p>
           </div>
         </div>
-      </section>
-
-      <section class="section" aria-labelledby="figure-title">
-        <h2 id="figure-title">Performance Summary</h2>
-        <p class="section-lede">
-          The figure summarizes HiPER performance across ALFWorld and WebShop experiments.
-        </p>
-        <figure class="figure-shell">
-          <div class="figure-pad">
-            <img
-              src="./assets/header_plot.png"
-              alt="HiPER result plots comparing ALFWorld and WebShop training and evaluation performance."
-            >
-          </div>
-        </figure>
       </section>
 
       <section class="section" id="approach" aria-labelledby="approach-title">
@@ -647,101 +662,21 @@
         </div>
       </section>
 
-      <section class="section" id="results" aria-labelledby="results-title">
-        <h2 id="results-title">Results</h2>
+      <section class="section" id="trajectories" aria-labelledby="trajectories-title">
+        <h2 id="trajectories-title">Example Trajectories</h2>
         <p class="section-lede">
-          HiPER is evaluated on long-horizon interactive tasks where agents must reason, act, observe, and recover over many turns.
+          Appendix E of the paper illustrates how HiPER agents keep subgoals while they remain useful and switch when the task phase changes. Select a case and step through the summarized Plan-Execute behavior.
         </p>
-        <div class="results-grid">
-          <div class="paper-block table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Algorithm</th>
-                  <th>Task</th>
-                  <th>Model</th>
-                  <th>Success rate</th>
-                  <th>Training log</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>HiPER</strong></td>
-                  <td>ALFWorld</td>
-                  <td>Qwen2.5-1.5B-Instruct</td>
-                  <td class="score">95.3%</td>
-                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/6sbbne68">W&amp;B</a></td>
-                </tr>
-                <tr>
-                  <td><strong>HiPER</strong></td>
-                  <td>ALFWorld</td>
-                  <td>Qwen2.5-7B-Instruct</td>
-                  <td class="score">97.4%</td>
-                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/6sbbne68">W&amp;B</a></td>
-                </tr>
-                <tr>
-                  <td><strong>HiPER</strong></td>
-                  <td>WebShop</td>
-                  <td>Qwen2.5-1.5B-Instruct</td>
-                  <td class="score">71.4%</td>
-                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/uwifhx6v">W&amp;B</a></td>
-                </tr>
-                <tr>
-                  <td><strong>HiPER</strong></td>
-                  <td>WebShop</td>
-                  <td>Qwen2.5-7B-Instruct</td>
-                  <td class="score">83.3%</td>
-                  <td><a href="https://api.wandb.ai/links/mhong-university-of-minnesota/uwifhx6v">W&amp;B</a></td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="paper-block trajectory-shell">
+          <div class="trajectory-tabs" role="tablist" aria-label="Trajectory examples">
+            <button class="trajectory-tab is-active" type="button" data-trajectory="cup" role="tab" aria-selected="true">ALFWorld: cool cup</button>
+            <button class="trajectory-tab" type="button" data-trajectory="knife" role="tab" aria-selected="false">ALFWorld: clean knife</button>
+            <button class="trajectory-tab" type="button" data-trajectory="shop" role="tab" aria-selected="false">WebShop: shirt search</button>
           </div>
-          <aside class="side-note">
-            <h3>What to read from the table</h3>
-            <p>
-              The larger model improves both environments, but the framework also gives strong results with Qwen2.5-1.5B-Instruct. The W&amp;B links point to the corresponding training runs.
-            </p>
-          </aside>
-        </div>
-      </section>
-
-      <section class="section" id="setup" aria-labelledby="setup-title">
-        <h2 id="setup-title">Setup</h2>
-        <p class="section-lede">
-          ALFWorld and WebShop have different environment constraints. Use a separate Python 3.10 environment for WebShop.
-        </p>
-        <div class="setup-grid">
-          <div class="command-block">
-            <h3>veRL and HiPER</h3>
-            <pre><code>conda create -n verl python==3.12 -y
-conda activate verl
-
-pip3 install torch==2.6.0 --index-url https://download.pytorch.org/whl/cu124
-pip3 install flash-attn==2.7.4.post1 --no-build-isolation
-pip3 install -e .
-pip3 install vllm==0.8.5
-pip3 install peft==0.17.1</code></pre>
-          </div>
-          <div class="command-block">
-            <h3>ALFWorld</h3>
-            <pre><code>pip3 install gymnasium==0.29.1
-pip3 install stable-baselines3==2.6.0
-pip install alfworld
-alfworld-download -f</code></pre>
-          </div>
-          <div class="command-block">
-            <h3>WebShop</h3>
-            <pre><code>conda create -n verl-webshop python==3.10 -y
-conda activate verl-webshop
-
-cd ./agent_system/environments/env_package/webshop/webshop
-./setup.sh -d all</code></pre>
-          </div>
-          <div class="command-block">
-            <h3>Run examples</h3>
-            <pre><code>bash example_scripts/HiPER_trainer/run_alfworld.sh
-bash example_scripts/HiPER_trainer/run_webshop.sh</code></pre>
-          </div>
+          <div class="trajectory-view" id="trajectory-view" aria-live="polite"></div>
+          <p class="trajectory-note">
+            Summaries are condensed from Appendix E of the <a href="https://arxiv.org/pdf/2602.16165">HiPER paper</a>; the original appendix contains the full environment observations and action transcripts.
+          </p>
         </div>
       </section>
 
@@ -762,5 +697,187 @@ bash example_scripts/HiPER_trainer/run_webshop.sh</code></pre>
         <span>Page style inspired by compact academic project pages such as <a href="https://yoonholee.com/meta-harness/">Meta-Harness</a>.</span>
       </div>
     </footer>
+
+    <script>
+      const trajectoryData = {
+        cup: {
+          title: "ALFWorld: cool a cup and put it in a cabinet",
+          setting: "A kitchen-like ALFWorld room with several countertops, a fridge, and cabinets.",
+          steps: [
+            {
+              mode: "SWITCH",
+              step: "Step 1",
+              label: "Start cup search",
+              subgoal: "Find a cup that can be cooled.",
+              action: "Begin checking likely surfaces such as countertops.",
+              observation: "The agent commits to a short-term search objective instead of planning the whole task upfront."
+            },
+            {
+              mode: "KEEP",
+              step: "Steps 2-4",
+              label: "Persist through search",
+              subgoal: "Continue finding the cup.",
+              action: "Move across countertops and pick up the cup when it appears.",
+              observation: "The subgoal persists across multiple exploratory actions until the object is acquired."
+            },
+            {
+              mode: "SWITCH",
+              step: "Steps 5-6",
+              label: "Cool the object",
+              subgoal: "Cool the cup before storage.",
+              action: "Navigate to the fridge and cool the cup.",
+              observation: "Once the cup is found, the agent switches to the next task phase."
+            },
+            {
+              mode: "SWITCH",
+              step: "Steps 7-10",
+              label: "Finish placement",
+              subgoal: "Put the cooled cup in a cabinet.",
+              action: "Go to a cabinet, open it, and move the cup inside.",
+              observation: "The final subgoal remains active through repeated cabinet-opening and placement actions."
+            }
+          ]
+        },
+        knife: {
+          title: "ALFWorld: clean a knife and place it on a sidetable",
+          setting: "A second ALFWorld room where the agent must find, clean, and place a knife.",
+          steps: [
+            {
+              mode: "SWITCH",
+              step: "Step 1",
+              label: "Find the knife",
+              subgoal: "Locate a knife before attempting cleaning or placement.",
+              action: "Search likely dining-table locations.",
+              observation: "HiPER begins with the prerequisite object-location phase."
+            },
+            {
+              mode: "KEEP",
+              step: "Steps 2-3",
+              label: "Acquire object",
+              subgoal: "Keep searching for the knife.",
+              action: "Inspect another table and take the knife once found.",
+              observation: "The same subgoal carries over until the required object is in hand."
+            },
+            {
+              mode: "SWITCH",
+              step: "Steps 4-5",
+              label: "Clean it",
+              subgoal: "Clean the knife.",
+              action: "Move to the sink basin and clean the knife.",
+              observation: "The switch marks completion of the search phase and start of the cleaning phase."
+            },
+            {
+              mode: "SWITCH",
+              step: "Steps 6-7",
+              label: "Place it",
+              subgoal: "Put the clean knife on the sidetable.",
+              action: "Navigate to the sidetable and move the knife there.",
+              observation: "The final phase aligns the remaining actions with the target receptacle."
+            }
+          ]
+        },
+        shop: {
+          title: "WebShop: configure a bright-aqua shirt purchase",
+          setting: "A WebShop task with constraints on garment type, fabric, fit, color, size, and price.",
+          steps: [
+            {
+              mode: "SWITCH",
+              step: "Step 1",
+              label: "Search by constraints",
+              subgoal: "Find candidate men's dress shirts matching the requested attributes.",
+              action: "Submit a query combining shirt type, material, color, size, and price constraints.",
+              observation: "The initial subgoal gathers plausible candidates from the search page."
+            },
+            {
+              mode: "KEEP",
+              step: "Step 2",
+              label: "Inspect candidate",
+              subgoal: "Keep evaluating the current shirt-search objective.",
+              action: "Open a promising product result.",
+              observation: "The episode is shorter than ALFWorld, but KEEP still appears during candidate inspection."
+            },
+            {
+              mode: "SWITCH",
+              step: "Step 3",
+              label: "Prioritize color",
+              subgoal: "Focus on the bright-aqua option for the selected product.",
+              action: "Choose the bright-aqua color variant.",
+              observation: "The paper notes this as a visible WebShop planning revision after the product page opens."
+            },
+            {
+              mode: "KEEP",
+              step: "Steps 4-5",
+              label: "Complete selection",
+              subgoal: "Keep satisfying the remaining bright-aqua shirt constraints.",
+              action: "Select x-small and proceed to buy.",
+              observation: "The final actions complete the selected configuration under the active subgoal."
+            }
+          ]
+        }
+      };
+
+      const view = document.getElementById("trajectory-view");
+      const tabs = Array.from(document.querySelectorAll(".trajectory-tab"));
+      let activeTrajectory = "cup";
+      let activeStep = 0;
+
+      function renderTrajectory() {
+        const trajectory = trajectoryData[activeTrajectory];
+        const steps = trajectory.steps.map((item, index) => `
+          <button class="trajectory-step ${index === activeStep ? "is-active" : ""}" type="button" data-step="${index}">
+            <strong>${item.label}</strong>
+            <span>${item.step} - ${item.mode}</span>
+          </button>
+        `).join("");
+        const item = trajectory.steps[activeStep];
+        view.innerHTML = `
+          <div class="trajectory-list">${steps}</div>
+          <article class="trajectory-detail">
+            <h3>${trajectory.title}</h3>
+            <div class="trajectory-meta">
+              <span class="trajectory-badge">${item.step}</span>
+              <span class="trajectory-badge ${item.mode.toLowerCase()}">${item.mode}</span>
+            </div>
+            <div class="trajectory-field">
+              <strong>Setting</strong>
+              <p>${trajectory.setting}</p>
+            </div>
+            <div class="trajectory-field">
+              <strong>Subgoal</strong>
+              <p>${item.subgoal}</p>
+            </div>
+            <div class="trajectory-field">
+              <strong>Action summary</strong>
+              <p>${item.action}</p>
+            </div>
+            <div class="trajectory-field">
+              <strong>Why it matters</strong>
+              <p>${item.observation}</p>
+            </div>
+          </article>
+        `;
+        view.querySelectorAll(".trajectory-step").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeStep = Number(button.dataset.step);
+            renderTrajectory();
+          });
+        });
+      }
+
+      tabs.forEach((button) => {
+        button.addEventListener("click", () => {
+          activeTrajectory = button.dataset.trajectory;
+          activeStep = 0;
+          tabs.forEach((tab) => {
+            const isActive = tab === button;
+            tab.classList.toggle("is-active", isActive);
+            tab.setAttribute("aria-selected", String(isActive));
+          });
+          renderTrajectory();
+        });
+      });
+
+      renderTrajectory();
+    </script>
   </body>
 </html>
