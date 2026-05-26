@@ -705,7 +705,7 @@
       <section class="section" id="performance" aria-labelledby="performance-title">
         <h2 id="performance-title">Performance Summary</h2>
         <p class="section-lede">
-          HiPER improves long-horizon agent training across ALFWorld and WebShop, with stronger final success rates and more stable training curves.
+          HiPER improves long-horizon agent training across ALFWorld and WebShop, with stronger final success rates and more stable <a href="https://wandb.ai/mhong-university-of-minnesota/verl_agent_alfworld/reports/HiPER-ALFWorld-Training-Curves--VmlldzoxNjE4OTgwMQ?accessToken=j73z6s29yru3cw5yl542a8bx816hoko7mhkmyb0ws5uvxmfn5pu551v6fay8s3x3">training curves</a>.
         </p>
         <figure class="performance-figure">
           <img
@@ -731,16 +731,16 @@
                 <div>
                   <h3>Choose the next subgoal</h3>
                   <p>
-                    The planner decides whether to continue the current objective or switch to a better one as observations arrive.
+                    Planning: the agent decides whether to continue the current objective or switch to a better one as observations arrive.
                   </p>
                 </div>
               </article>
               <article class="method-step">
-                <span class="label">Act</span>
+                <span class="label">Execute</span>
                 <div>
                   <h3>Execute grounded actions</h3>
                   <p>
-                    The executor converts each subgoal into environment actions, keeping local behavior tied to the current plan.
+                    Execution: the agent converts each subgoal into environment actions, keeping local behavior tied to the current plan.
                   </p>
                 </div>
               </article>
