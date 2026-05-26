@@ -349,125 +349,74 @@
 
       .trajectory-view {
         display: grid;
-        grid-template-columns: minmax(220px, 0.46fr) minmax(0, 1fr);
-        gap: 1rem;
+        gap: 0.9rem;
       }
 
-      .trajectory-list {
+      .trajectory-title {
+        margin-bottom: 0.1rem;
+        font-size: 1.2rem;
+      }
+
+      .trajectory-transcript {
         display: grid;
-        gap: 0.55rem;
+        gap: 0.9rem;
       }
 
-      .trajectory-step {
+      .trajectory-turn {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.75rem;
+      }
+
+      .trajectory-block {
+        overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 8px;
-        padding: 0.72rem 0.8rem;
-        background: #fbfcfe;
-        color: #394154;
-        text-align: left;
-        font: inherit;
-        cursor: pointer;
-      }
-
-      .trajectory-step.is-active,
-      .trajectory-step:hover,
-      .trajectory-step:focus-visible {
-        border-color: rgba(36, 87, 166, 0.35);
-        background: #eef4ff;
-        outline: none;
-      }
-
-      .trajectory-step strong {
-        display: block;
-        color: var(--ink);
-        font-size: 0.95rem;
-      }
-
-      .trajectory-step span {
-        color: var(--muted);
-        font-size: 0.86rem;
-      }
-
-      .trajectory-detail {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 1rem;
         background: #fff;
       }
 
-      .trajectory-detail h3 {
-        margin-bottom: 0.55rem;
-        font-size: 1.22rem;
+      .trajectory-block.agent {
+        border-color: rgba(36, 87, 166, 0.24);
       }
 
-      .trajectory-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 0.85rem;
+      .trajectory-block.env {
+        border-color: rgba(180, 35, 24, 0.22);
       }
 
-      .trajectory-badge {
-        border-radius: 999px;
-        padding: 0.25rem 0.56rem;
-        background: rgba(36, 87, 166, 0.09);
-        color: var(--blue);
-        font-size: 0.78rem;
-        font-weight: 820;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+      .trajectory-block h3 {
+        margin: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 0.55rem 0.75rem;
+        background: #fbfcfe;
+        font-size: 0.9rem;
+        font-family: inherit;
       }
 
-      .trajectory-badge.switch {
-        background: rgba(180, 35, 24, 0.08);
+      .trajectory-block.env h3 {
         color: var(--red);
       }
 
-      .trajectory-badge.keep {
-        background: rgba(47, 111, 85, 0.09);
-        color: var(--green);
+      .trajectory-block.agent h3 {
+        color: var(--blue);
       }
 
-      .trajectory-field {
-        margin-bottom: 0.85rem;
-      }
-
-      .trajectory-field:last-child {
-        margin-bottom: 0;
-      }
-
-      .trajectory-field strong {
-        display: block;
-        margin-bottom: 0.15rem;
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .trajectory-field p {
-        margin-bottom: 0;
-        color: #3c4556;
+      .trajectory-text {
+        margin: 0;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        padding: 0.75rem;
+        background: #fff;
+        color: #2f3848;
+        font-family:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.82rem;
+        line-height: 1.5;
       }
 
       .trajectory-note {
         margin-top: 0.9rem;
         color: var(--muted);
         font-size: 0.92rem;
-      }
-
-      pre {
-        margin: 0;
-        overflow-x: auto;
-        padding: 0.95rem;
-        background: #171b24;
-        color: #eef3ff;
-        font-size: 0.86rem;
-        line-height: 1.55;
-      }
-
-      code {
-        font-family:
-          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       }
 
       .bibtex {
@@ -675,7 +624,7 @@
           </div>
           <div class="trajectory-view" id="trajectory-view" aria-live="polite"></div>
           <p class="trajectory-note">
-            Summaries are condensed from Appendix E of the <a href="https://arxiv.org/pdf/2602.16165">HiPER paper</a>; the original appendix contains the full environment observations and action transcripts.
+            Original trajectory text is parsed from Appendix E of the <a href="https://arxiv.org/pdf/2602.16165">HiPER paper</a> and reformatted for this interactive view.
           </p>
         </div>
       </section>
@@ -700,174 +649,169 @@
 
     <script>
       const trajectoryData = {
-        cup: {
-          title: "ALFWorld: cool a cup and put it in a cabinet",
-          setting: "A kitchen-like ALFWorld room with several countertops, a fridge, and cabinets.",
-          steps: [
-            {
-              mode: "SWITCH",
-              step: "Step 1",
-              label: "Start cup search",
-              subgoal: "Find a cup that can be cooled.",
-              action: "Begin checking likely surfaces such as countertops.",
-              observation: "The agent commits to a short-term search objective instead of planning the whole task upfront."
-            },
-            {
-              mode: "KEEP",
-              step: "Steps 2-4",
-              label: "Persist through search",
-              subgoal: "Continue finding the cup.",
-              action: "Move across countertops and pick up the cup when it appears.",
-              observation: "The subgoal persists across multiple exploratory actions until the object is acquired."
-            },
-            {
-              mode: "SWITCH",
-              step: "Steps 5-6",
-              label: "Cool the object",
-              subgoal: "Cool the cup before storage.",
-              action: "Navigate to the fridge and cool the cup.",
-              observation: "Once the cup is found, the agent switches to the next task phase."
-            },
-            {
-              mode: "SWITCH",
-              step: "Steps 7-10",
-              label: "Finish placement",
-              subgoal: "Put the cooled cup in a cabinet.",
-              action: "Go to a cabinet, open it, and move the cup inside.",
-              observation: "The final subgoal remains active through repeated cabinet-opening and placement actions."
-            }
-          ]
+        "cup": {
+                "title": "ALFWorld: cool cup",
+                "steps": [
+                        {
+                                "step": 1,
+                                "environment": "-= Welcome to TextWorld, ALFRED! =-\n\nYou are in the middle of a room. Looking quickly around you, you see a cabinet 19, a cabinet 18, a cabinet 17, a cabinet 16, a cabinet 15, a cabinet 14, a cabinet 13, a cabinet 12, a cabinet 11, a cabinet 10, a cabinet 9, a cabinet 8, a cabinet 7, a cabinet 6, a cabinet 5, a cabinet 4, a cabinet 3, a cabinet 2, a cabinet 1, a coffeemachine 1, a countertop 3, a countertop 2, a countertop 1, a drawer 4, a drawer 3, a drawer 2, a drawer 1, a fridge 1, a garbagecan 1, a microwave 1, a sinkbasin 1, a stoveburner 4, a stoveburner 3, a stoveburner 2, a stoveburner 1, and a toaster 1. Your task is to: cool some cup and put it in cabinet.",
+                                "agent": "Switch: SWITCH  Subgoal: find and cool a cup\n\nAction: go to countertop 1"
+                        },
+                        {
+                                "step": 2,
+                                "environment": "You arrive at countertop 1. On the countertop 1, you see a dishsponge 1, a mug 1, a potato 1, a saltshaker 1, and a tomato 1.",
+                                "agent": "Switch: KEEP  Subgoal: find and cool a cup\n\nAction: go to countertop 3"
+                        },
+                        {
+                                "step": 3,
+                                "environment": "You arrive at countertop 3. On the countertop 3, you see a butterknife 1, a dishsponge 3, a lettuce 2, a pot 1, a saltshaker 2, a spatula 2, and a spatula 1.",
+                                "agent": "Switch: KEEP Subgoal: find and cool a cup\n\nAction: go to countertop 2"
+                        },
+                        {
+                                "step": 4,
+                                "environment": "You arrive at countertop 2. On the countertop 2, you see a bread 1, a cup 1, a fork 1, a spoon 1, and a tomato 2.",
+                                "agent": "Switch: KEEP Subgoal: find and cool a cup\n\nAction: take cup 1 from countertop 2"
+                        },
+                        {
+                                "step": 5,
+                                "environment": "You pick up the cup 1 from the countertop 2.",
+                                "agent": "Switch: SWITCH  Subgoal: cool the cup and put it in a cabinet\n\nAction: go to fridge 1"
+                        },
+                        {
+                                "step": 6,
+                                "environment": "You arrive at fridge 1. The fridge 1 is closed.",
+                                "agent": "Switch: KEEP  Subgoal: cool the cup and put it in a cabinet\n\nAction: cool cup 1 with fridge 1"
+                        },
+                        {
+                                "step": 7,
+                                "environment": "You cool the cup 1 using the fridge 1.",
+                                "agent": "Switch: SWITCH  Subgoal: put the cooled cup in cabinet\n\nAction: go to cabinet 1"
+                        },
+                        {
+                                "step": 8,
+                                "environment": "You arrive at cabinet 1. The cabinet 1 is closed.",
+                                "agent": "Switch: KEEP Subgoal: put the cooled cup in cabinet\n\nAction: open cabinet 1"
+                        },
+                        {
+                                "step": 9,
+                                "environment": "You arrive at cabinet 1. The cabinet 1 is closed.",
+                                "agent": "Switch: KEEP\n\nSubgoal: put the cooled cup in cabinet\n\nAction: open cabinet 1"
+                        },
+                        {
+                                "step": 10,
+                                "environment": "You open the cabinet 1. The cabinet 1 is open. In it, you see nothing.",
+                                "agent": "Switch: KEEP  Subgoal: put the cooled cup in the cabinet\n\nAction: move cup 1 to cabinet 1"
+                        }
+                ]
         },
-        knife: {
-          title: "ALFWorld: clean a knife and place it on a sidetable",
-          setting: "A second ALFWorld room where the agent must find, clean, and place a knife.",
-          steps: [
-            {
-              mode: "SWITCH",
-              step: "Step 1",
-              label: "Find the knife",
-              subgoal: "Locate a knife before attempting cleaning or placement.",
-              action: "Search likely dining-table locations.",
-              observation: "HiPER begins with the prerequisite object-location phase."
-            },
-            {
-              mode: "KEEP",
-              step: "Steps 2-3",
-              label: "Acquire object",
-              subgoal: "Keep searching for the knife.",
-              action: "Inspect another table and take the knife once found.",
-              observation: "The same subgoal carries over until the required object is in hand."
-            },
-            {
-              mode: "SWITCH",
-              step: "Steps 4-5",
-              label: "Clean it",
-              subgoal: "Clean the knife.",
-              action: "Move to the sink basin and clean the knife.",
-              observation: "The switch marks completion of the search phase and start of the cleaning phase."
-            },
-            {
-              mode: "SWITCH",
-              step: "Steps 6-7",
-              label: "Place it",
-              subgoal: "Put the clean knife on the sidetable.",
-              action: "Navigate to the sidetable and move the knife there.",
-              observation: "The final phase aligns the remaining actions with the target receptacle."
-            }
-          ]
+        "knife": {
+                "title": "ALFWorld: clean knife",
+                "steps": [
+                        {
+                                "step": 1,
+                                "environment": "-= Welcome to TextWorld, ALFRED! =-\n\nYou are in the middle of a room. Looking quickly around you, you see a cabinet 4, a cabinet 3, a cabinet 2, a cabinet 1, a coffeemachine 1, a countertop 1, a diningtable 3, a diningtable 2, a diningtable 1, a drawer 1, a fridge 1, a garbagecan 1, a microwave 1, a sidetable 1, a sinkbasin 1, a stoveburner 4, a stoveburner 3, a stoveburner 2, a stoveburner 1, and a toaster 1. Your task is to: put a clean knife in sidetable.",
+                                "agent": "Switch: SWITCH Subgoal: find a knife  Action: go to diningtable 3"
+                        },
+                        {
+                                "step": 2,
+                                "environment": "You arrive at diningtable 3. On the diningtable 3, you see a cup 2, a lettuce 1, a peppershaker 1, a potato 3, a spatula 3, and a spoon 3.",
+                                "agent": "Switch: KEEP Subgoal: find a knife\n\nAction: go to diningtable 2"
+                        },
+                        {
+                                "step": 3,
+                                "environment": "You arrive at diningtable 2. On the diningtable 2, you see a bowl 1, a bread 1, a cup 3, a fork 3, a knife 1, and a soapbottle 2.",
+                                "agent": "Switch: KEEP Subgoal: find a knife\n\nAction: take knife 1 from diningtable 2"
+                        },
+                        {
+                                "step": 4,
+                                "environment": "You pick up the knife 1 from the diningtable 2.",
+                                "agent": "Switch: SWITCH Subgoal: clean the knife 1\n\nAction: go to sinkbasin 1"
+                        },
+                        {
+                                "step": 5,
+                                "environment": "You arrive at sinkbasin 1. On the sinkbasin 1, you see a apple 1, a butterknife 2, a potato 2, and a potato 1.",
+                                "agent": "Switch: KEEP Subgoal: clean the knife 1\n\nAction: clean knife 1 with sinkbasin 1"
+                        },
+                        {
+                                "step": 6,
+                                "environment": "You clean the knife 1 using the sinkbasin 1.",
+                                "agent": "Switch: SWITCH Subgoal: put a clean knife in sidetable\n\nAction: go to sidetable 1"
+                        },
+                        {
+                                "step": 7,
+                                "environment": "You arrive at sidetable 1. On the sidetable 1, you see a apple 2, a butterknife 1, a cup 1, a fork 1, a saltshaker 1, and a spoon 2.",
+                                "agent": "Switch: KEEP Subgoal: put a clean knife in sidetable\n\nAction: move knife 1 to sidetable 1"
+                        }
+                ]
         },
-        shop: {
-          title: "WebShop: configure a bright-aqua shirt purchase",
-          setting: "A WebShop task with constraints on garment type, fabric, fit, color, size, and price.",
-          steps: [
-            {
-              mode: "SWITCH",
-              step: "Step 1",
-              label: "Search by constraints",
-              subgoal: "Find candidate men's dress shirts matching the requested attributes.",
-              action: "Submit a query combining shirt type, material, color, size, and price constraints.",
-              observation: "The initial subgoal gathers plausible candidates from the search page."
-            },
-            {
-              mode: "KEEP",
-              step: "Step 2",
-              label: "Inspect candidate",
-              subgoal: "Keep evaluating the current shirt-search objective.",
-              action: "Open a promising product result.",
-              observation: "The episode is shorter than ALFWorld, but KEEP still appears during candidate inspection."
-            },
-            {
-              mode: "SWITCH",
-              step: "Step 3",
-              label: "Prioritize color",
-              subgoal: "Focus on the bright-aqua option for the selected product.",
-              action: "Choose the bright-aqua color variant.",
-              observation: "The paper notes this as a visible WebShop planning revision after the product page opens."
-            },
-            {
-              mode: "KEEP",
-              step: "Steps 4-5",
-              label: "Complete selection",
-              subgoal: "Keep satisfying the remaining bright-aqua shirt constraints.",
-              action: "Select x-small and proceed to buy.",
-              observation: "The final actions complete the selected configuration under the active subgoal."
-            }
-          ]
+        "shop": {
+                "title": "WebShop: shirt search",
+                "steps": [
+                        {
+                                "step": 1,
+                                "environment": "Your task is to: Find me machine wash men's dress shirts with cotton spandex, classic fit, short sleeve with color: bright aqua, and size: x-small, and price lower than 60.00 dollars.Your current observation is: 'Search'.",
+                                "agent": "Switch: SWITCH Subgoal: Find men's dress shirts with cotton spandex, classic fit, bright aqua, size x-small, and price lower than 60.00.  Action: search[bright aqua men's dress shirts size x-small cotton spandex bright aqua price less than 60]"
+                        },
+                        {
+                                "step": 2,
+                                "environment": "'Back to Search'\n\n'Page 1 (Total results: 50)'\n\n'Next >'\n\n'B07HRFSNL4'\n'Nautica Men's Solid Crew Neck Short-Sleeve Pocket T-Shirt'\n'$16.05 to $40.98'\n\n'B07F2G93BJ'\n'Amazon Essentials Men's Slim-fit Long-Sleeve Solid Pocket Oxford Shirt'\n'$18.5'\n\n'B09QQP3356'\n'HAUKLIE Men's Sports Waffle Ribbed Polo Shirts Summer Short Sleeve Cotton Muscle Quarter-Zip Henley T-Shirt Tunics Tops'\n'$10.99'\n\n'B00ED8OH2C'\n'Propper Men's Pack 3 t-Shirt'\n'$13.37 to $47.74'\n\n'B09KLQLLT2'\n'Long Sleeve Superhero T Shirt Tank Top Mens Compression Shirt Men Workout Fitness Gym Shirt'\n'$19.99'\n\n'B09PBPZ24Z'\n'myhehthw Women's High Waisted Jeans for Women Distressed Ripped Jeans Slim Fit Butt Lifting Skinny Stretch Jeans Trousers'\n'$22.99 to $25.99'\n\n'B09M63B87V'\n'YALFJV Women Long Sleeve Crew Neck Side Button T Shirts Tunic Dress Loose Asymmetric Hem Tunic Pullover to Wear with Leggings'\n'$10.71 to $18.34'\n\n'B07DKGJR74'\n'Amazon Brand - Daily Ritual Women's 100% Cotton Oversized Fit V-Neck Pullover Sweater'\n'$20.66 to $29.2'\n\n'B099231V35'\n'Mens Casual Cargo Pants Hi Vis Viz Reflective Overalls High Visibility Safe Work Pants Outdoor Hiking Trousers Big and Tall'\n'$16.79'\n\n'B07JVVDJ6L'\n'Canadian Tuxedo T Shirt - Novelty Denim Tux T-Shirt'\n'$19.99'.",
+                                "agent": "Switch: KEEP Subgoal: Find men's dress shirts with cotton spandex, classic fit, bright aqua, size x-small, and price lower than 60.00. Action: click[b07hrfsnl4]"
+                        },
+                        {
+                                "step": 3,
+                                "environment": "'Back to Search'\n\n'< Prev'\n\n'size'\n'x-small'\n'small'\n'medium'\n'large'\n'large tall'\n'x-large'\n'x-large tall'\n'xx-large'\n'xx-large tall'\n'3x-large tall'\n'4x-large tall'\n'5x-large tall'\n'1x'\n'2x'\n'3x'\n'4x'\n'5x'\n'6x'\n\n'color'\n'navy'\n'noon blue'\n'grey heather'\n'nautica red'\n'bright white'\n'true black'\n'pale coral'\n'cradle pink'\n'bright aqua'\n'mint spring'\n'monaco blue'\n'charcoal heather (dark)'\n'barolo'\n'tidal green'\n'charcoal heather (light)'\n'estate blue'\n'patina green'\n'black'\n'bright aqua blue'\n'bright cobalt'\n'coral sands'\n'deep anchor heather'\n'hawaiian ocean'\n'melon berry'\n'pine forest green'\n'shipwreck burgundy'\n'white'\n'zest'\n'deep atlantic'\n'delft'\n'pale coral red'\n\n'Nautica Men's Solid Crew Neck Short-Sleeve Pocket T-Shirt'\n 'Price: $16.05 to $40.98'\n 'Rating: N.A.'\n 'Description'\n 'Features'\n 'Reviews'\n 'Buy Now'",
+                                "agent": "Switch: SWITCH Subgoal: Find bright aqua men's dress shirts with cotton spandex, classic fit, size x-small, and price lower than 60.00 Action: click[bright aqua]"
+                        },
+                        {
+                                "step": 4,
+                                "environment": "'Back to Search'\n\n'< Prev'\n\n'size' 'x-small' 'small' 'medium' 'large' 'large tall' 'x-large' 'x-large tall' 'xx-large' 'xx-large tall' '3x-large tall' '4x-large tall' '5x-large tall' '1x' '2x' '3x' '4x' '5x' '6x'\n\n'color' 'navy' 'noon blue' 'grey heather' 'nautica red' 'bright white' 'true black' 'pale coral' 'cradle pink' 'bright aqua' 'mint spring' 'monaco blue' 'charcoal heather (dark)' 'barolo' 'tidal green' 'charcoal heather (light)' 'estate blue' 'patina green' 'black' 'bright aqua blue' 'bright cobalt' 'coral sands' 'deep anchor heather' 'hawaiian ocean' 'melon berry' 'pine forest green' 'shipwreck burgundy' 'white' 'zest' 'deep atlantic' 'delft' 'pale coral red'\n\n'Nautica Men's Solid Crew Neck Short-Sleeve Pocket T-Shirt' 'Price: $16.05 to $40.98' 'Rating: N.A.' 'Description' 'Features' 'Reviews' 'Buy Now'",
+                                "agent": "Switch: KEEP Subgoal: Find bright aqua men's dress shirts with cotton spandex, classic fit, size x-small, and price lower than 60.00 Action: click[x-small]"
+                        },
+                        {
+                                "step": 5,
+                                "environment": "'Back to Search'\n\n'< Prev'\n\n'size'  'x-small'  'small'  'medium'  'large'  'large tall'  'x-large'  'x-large tall'  'xx-large'  'xx-large tall'  '3x-large tall'  '4x-large tall'  '5x-large tall'  '1x'  '2x'  '3x'  '4x'  '5x'  '6x'\n\n'color'  'navy'  'noon blue'  'grey heather'  'nautica red'  'bright white'  'true black'  'pale coral'  'cradle pink'  'bright aqua'  'mint spring'  'monaco blue'  'charcoal heather (dark)'  'barolo'  'tidal green'  'charcoal heather (light)'  'estate blue'  'patina green'  'black'  'bright aqua blue'  'bright cobalt'  'coral sands'  'deep anchor heather'  'hawaiian ocean'  'melon berry'  'pine forest green'  'shipwreck burgundy'  'white'  'zest'  'deep atlantic'  'delft'  'pale coral red'\n\n'Nautica Men's Solid Crew Neck Short-Sleeve Pocket T-Shirt'  'Price: $16.05 to $40.98'  'Rating: N.A.'  'Description'  'Features'  'Reviews'  'Buy Now'",
+                                "agent": "Switch: KEEP Subgoal: Find bright aqua men's dress shirts with cotton spandex, classic fit, size x-small, and price lower than 60.00 Action: click[buy now]"
+                        }
+                ]
         }
-      };
+};
 
       const view = document.getElementById("trajectory-view");
       const tabs = Array.from(document.querySelectorAll(".trajectory-tab"));
       let activeTrajectory = "cup";
-      let activeStep = 0;
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
 
       function renderTrajectory() {
         const trajectory = trajectoryData[activeTrajectory];
-        const steps = trajectory.steps.map((item, index) => `
-          <button class="trajectory-step ${index === activeStep ? "is-active" : ""}" type="button" data-step="${index}">
-            <strong>${item.label}</strong>
-            <span>${item.step} - ${item.mode}</span>
-          </button>
+        const turns = trajectory.steps.map((item) => `
+          <div class="trajectory-turn">
+            <article class="trajectory-block env">
+              <h3>Environment - Step ${item.step}</h3>
+              <pre class="trajectory-text">${escapeHtml(item.environment || "")}</pre>
+            </article>
+            <article class="trajectory-block agent">
+              <h3>Agent - Step ${item.step}</h3>
+              <pre class="trajectory-text">${escapeHtml(item.agent || "")}</pre>
+            </article>
+          </div>
         `).join("");
-        const item = trajectory.steps[activeStep];
         view.innerHTML = `
-          <div class="trajectory-list">${steps}</div>
-          <article class="trajectory-detail">
-            <h3>${trajectory.title}</h3>
-            <div class="trajectory-meta">
-              <span class="trajectory-badge">${item.step}</span>
-              <span class="trajectory-badge ${item.mode.toLowerCase()}">${item.mode}</span>
-            </div>
-            <div class="trajectory-field">
-              <strong>Setting</strong>
-              <p>${trajectory.setting}</p>
-            </div>
-            <div class="trajectory-field">
-              <strong>Subgoal</strong>
-              <p>${item.subgoal}</p>
-            </div>
-            <div class="trajectory-field">
-              <strong>Action summary</strong>
-              <p>${item.action}</p>
-            </div>
-            <div class="trajectory-field">
-              <strong>Why it matters</strong>
-              <p>${item.observation}</p>
-            </div>
-          </article>
+          <h3 class="trajectory-title">${escapeHtml(trajectory.title)}</h3>
+          <div class="trajectory-transcript">${turns}</div>
         `;
-        view.querySelectorAll(".trajectory-step").forEach((button) => {
-          button.addEventListener("click", () => {
-            activeStep = Number(button.dataset.step);
-            renderTrajectory();
-          });
-        });
       }
 
       tabs.forEach((button) => {
         button.addEventListener("click", () => {
           activeTrajectory = button.dataset.trajectory;
-          activeStep = 0;
           tabs.forEach((tab) => {
             const isActive = tab === button;
             tab.classList.toggle("is-active", isActive);
