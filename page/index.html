@@ -8,6 +8,15 @@
       name="description"
       content="HiPER is a hierarchical reinforcement learning framework with explicit credit assignment for long-horizon large language model agents."
     >
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="HiPER: Hierarchical Reinforcement Learning for LLM Agents">
+    <meta property="og:description" content="HiPER trains long-horizon LLM agents with explicit Plan-Execute structure and Hierarchical Advantage Estimation.">
+    <meta property="og:image" content="assets/header_plot.png">
+    <meta property="og:url" content="https://jonp07.github.io/HiPER-agent/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HiPER: Hierarchical Reinforcement Learning for LLM Agents">
+    <meta name="twitter:description" content="Explicit credit assignment for long-horizon LLM agents through Plan-Execute RL and HAE.">
+    <meta name="twitter:image" content="assets/header_plot.png">
     <style>
       :root {
         color-scheme: light;
@@ -207,16 +216,70 @@
       }
 
       .intro-grid {
-        padding: 24px 30px;
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.72fr);
+        gap: 2rem;
+        align-items: start;
+        padding: 30px;
       }
 
-      .intro-text {
-        max-width: none;
-        font-size: 1.05rem;
+      .overview-kicker {
+        margin-bottom: 0.65rem;
+        color: var(--red);
+        font-size: 0.78rem;
+        font-weight: 820;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
-      .intro-text p:last-child {
+      .overview-lead {
+        margin-bottom: 1rem;
+        color: #2f3848;
+        font-size: clamp(1.16rem, 2vw, 1.42rem);
+        line-height: 1.34;
+      }
+
+      .overview-takeaway {
+        margin: 1.15rem 0 0;
+        border-left: 4px solid var(--red);
+        padding-left: 1rem;
+        color: var(--muted);
+      }
+
+      .overview-points {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .overview-point {
+        border-top: 1px solid var(--line);
+        padding-top: 1rem;
+      }
+
+      .overview-point:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .overview-point span {
+        display: inline-flex;
+        margin-bottom: 0.35rem;
+        color: var(--blue);
+        font-size: 0.75rem;
+        font-weight: 820;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .overview-point h3 {
+        margin-bottom: 0.35rem;
+        font-size: 1.08rem;
+        line-height: 1.24;
+      }
+
+      .overview-point p {
         margin-bottom: 0;
+        color: var(--muted);
       }
 
       h2 {
@@ -692,14 +755,32 @@
     <main>
       <section class="section" id="overview" aria-labelledby="overview-title">
         <div class="paper-block intro-grid">
-          <div class="intro-text">
-            <h2 id="overview-title">Overview</h2>
-            <p>
-              HiPER addresses long-horizon reinforcement learning for interactive language agents by making their implicit hierarchical behavior explicit and aligning the training signal with that structure. Rather than treating the agent as a flat policy that selects one action at a time, HiPER separates high-level planning from low-level execution: at each step, the agent decides whether to keep the current subgoal or switch to a new one, then acts according to that subgoal. This Plan-Execute structure helps the agent maintain temporally extended objectives while still adapting dynamically, reducing failures such as task drift, premature switching, and repetitive ineffective actions. To train this hierarchy, HiPER introduces Hierarchical Advantage Estimation, which propagates credit both within subgoal segments and across segments, providing a more suitable learning signal than flat advantage estimation and offering benefits in unbiasedness and variance reduction. 
+          <div class="overview-copy">
+            <p class="overview-kicker">Core idea</p>
+            <h2 id="overview-title">Train agents at the level where they actually make progress.</h2>
+            <p class="overview-lead">
+              Long-horizon LLM agents do not solve tasks as isolated one-step actions. They search, commit to subgoals, revise course, and carry intent across several environment steps.
             </p>
-            <p>
-              Empirically, HiPER achieves strong results on interactive benchmarks such as ALFWorld and WebShop, reaching 97.4% success on ALFWorld and 83.3% on WebShop with Qwen2.5-7B-Instruct. Its key message is that effective long-horizon agent training requires both an explicit behavioral hierarchy and a credit assignment method matched to that hierarchy: planning alone is insufficient if learning remains flat, and better credit assignment depends on exposing the right decision structure.
+            <p class="overview-takeaway">
+              HiPER makes that hidden structure explicit, then assigns credit to both the plan and the execution that follows it.
             </p>
+          </div>
+          <div class="overview-points" aria-label="Overview points">
+            <article class="overview-point">
+              <span>Problem</span>
+              <h3>Flat RL blurs the cause of success.</h3>
+              <p>Sparse final rewards make it hard to tell whether an agent chose the wrong subgoal, executed poorly, or switched too early.</p>
+            </article>
+            <article class="overview-point">
+              <span>Structure</span>
+              <h3>Plan-Execute exposes subgoals.</h3>
+              <p>The agent decides whether to keep the current subgoal or switch, then acts under that subgoal while new observations arrive.</p>
+            </article>
+            <article class="overview-point">
+              <span>Training</span>
+              <h3>HAE matches credit to the hierarchy.</h3>
+              <p>Hierarchical Advantage Estimation propagates learning signals within subgoal segments and across subgoal boundaries.</p>
+            </article>
           </div>
         </div>
       </section>
@@ -803,7 +884,6 @@
     <footer class="footer">
       <div class="footer-inner">
         <span>Built on <a href="https://github.com/langfengQ/verl-agent">verl-agent</a> and <a href="https://github.com/volcengine/verl">veRL</a>.</span>
-        <span>Page style inspired by compact academic project pages such as <a href="https://yoonholee.com/meta-harness/">Meta-Harness</a>.</span>
       </div>
     </footer>
 
