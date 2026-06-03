@@ -92,6 +92,27 @@
         text-decoration: none;
       }
 
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+      }
+
+      .construction-badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        border: 1px solid #e7c777;
+        border-radius: 999px;
+        padding: 0.18rem 0.55rem;
+        background: #fff7dc;
+        color: #7a5610;
+        font-size: 0.74rem;
+        font-weight: 820;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
       .nav-links {
         display: flex;
         flex-wrap: wrap;
@@ -714,13 +735,21 @@
         .pill {
           width: 100%;
         }
+
+        .brand-row {
+          width: 100%;
+          justify-content: space-between;
+        }
       }
     </style>
   </head>
   <body>
     <nav class="top-nav" aria-label="Primary navigation">
       <div class="nav-inner">
-        <a class="brand" href="#top">HiPER</a>
+        <div class="brand-row">
+          <a class="brand" href="#top">HiPER</a>
+          <span class="construction-badge" aria-label="Site status">Under construction</span>
+        </div>
         <div class="nav-links">
           <a href="#overview">Overview</a>
           <a href="#approach">Approach</a>
